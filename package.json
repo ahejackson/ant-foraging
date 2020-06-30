@@ -1,0 +1,22 @@
+{
+  "name": "ants",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "parcel build src/index.html",
+    "clean": "rm -rf .cache",
+    "dev": "parcel src/index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Jackson",
+  "license": "ISC",
+  "dependencies": {
+    "@types/seedrandom": "^2.4.28",
+    "parcel-bundler": "^1.12.4",
+    "prettier": "^2.0.5",
+    "seedrandom": "^3.0.5",
+    "three": "^0.118.3",
+    "typescript": "^3.9.5"
+  }
+}
