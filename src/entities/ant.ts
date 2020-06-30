@@ -1,5 +1,4 @@
-import * as THREE from 'three';
-import { Vector3 } from 'three';
+import { BoxBufferGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
 
 export enum AntState {
   IN_COLONY,
@@ -8,17 +7,17 @@ export enum AntState {
 }
 
 export default class Ant {
-  static readonly antGeometry = new THREE.BoxGeometry(1, 0.5, 0.7);
-  static readonly antMaterial = new THREE.MeshBasicMaterial({
+  static readonly GEOMETRY = new BoxBufferGeometry(1, 0.5, 0.7);
+  static readonly MATERIAL = new MeshBasicMaterial({
     color: 0x0000dd,
   });
 
   scent = 'ONE';
   state = AntState.IN_COLONY;
-  mesh: THREE.Mesh;
+  mesh: Mesh;
 
   constructor(x: number, y: number) {
-    this.mesh = new THREE.Mesh(Ant.antGeometry, Ant.antMaterial);
+    this.mesh = new Mesh(Ant.GEOMETRY, Ant.MATERIAL);
     this.mesh.position.x = x;
     this.mesh.position.z = y;
     this.mesh.position.y = 0.25;
@@ -27,8 +26,8 @@ export default class Ant {
   }
 
   update(delta: number) {
-    let movement = new THREE.Vector3(0.005, 0, 0);
-    let normal = new THREE.Vector3(0, 1, 0);
+    let movement = new Vector3(0.005, 0, 0);
+    let normal = new Vector3(0, 1, 0);
     movement.applyAxisAngle(normal, this.mesh.rotation.y);
 
     this.mesh.position.add(movement);

@@ -1,5 +1,3 @@
-import Random from '../util/random';
-
 import RNG from '../util/random';
 
 export default class AntSim {
