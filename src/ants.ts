@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { MapControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import World from './world/world';
+import PickHelper from './util/pick-helper';
 
 /*
  * The main file
@@ -13,6 +14,9 @@ const canvas = document.querySelector<HTMLCanvasElement>('#ants')!;
 const renderer = new THREE.WebGLRenderer({ canvas });
 const camera = createCamera();
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xdddddd);
+
+const pickHelper = new PickHelper(canvas);
 
 // world
 const width = 20;
@@ -56,6 +60,7 @@ function render(time: number) {
 
   update(delta);
 
+  pickHelper.pick(pickHelper.mouse, scene, camera);
   renderer.render(scene, camera);
 
   if (running) {

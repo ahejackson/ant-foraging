@@ -1,15 +1,17 @@
 import {
   DoubleSide,
-  Mesh,
+  Group,
   MeshPhongMaterial,
   NearestFilter,
   PlaneBufferGeometry,
   RepeatWrapping,
   TextureLoader,
+  Mesh,
+  GridHelper,
 } from 'three';
 
 export default class Terrain {
-  mesh: Mesh;
+  mesh: Group;
 
   constructor(readonly width: number, readonly height: number) {
     const loader = new TextureLoader();
@@ -26,12 +28,18 @@ export default class Terrain {
       map: texture,
       side: DoubleSide,
     });
-    this.mesh = new Mesh(terrainGeo, terrainMat);
+    const mesh = new Mesh(terrainGeo, terrainMat);
 
     // rotate the mesh and reposition to make world space match mesh space
-    this.mesh.rotation.x = Math.PI * -0.5;
-    this.mesh.position.x = (width - 1) / 2;
-    this.mesh.position.z = (height - 1) / 2;
+    mesh.rotation.x = Math.PI * -0.5;
+    mesh.position.set((width - 1) / 2, 0, (height - 1) / 2);
+
+    this.mesh = new Group();
+    this.mesh.add(mesh);
+
+    const gridHelper = new GridHelper(width, width);
+    gridHelper.position.set((width - 1) / 2, 0.02, (height - 1) / 2);
+    this.mesh.add(gridHelper);
   }
 
   update(delta: number) {}

@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "tmp": " parcel src/test/example-voxel-editor.html",
     "build": "parcel build src/index.html",
     "clean": "rm -rf .cache",
     "dev": "parcel src/index.html",
