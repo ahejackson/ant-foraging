@@ -1,7 +1,7 @@
 // Ants
-export const MAX_ANTS = 200;
+export const MAX_ANTS = 10; //200;
 export const ANTS_PER_SPAWN = 1;
-export const ANTS_SPAWN_INTERVAL = 200;
+export const ANT_SPAWN_INTERVAL = 2000; //200;
 
 // World
 export const WIDTH = 20; // 200;

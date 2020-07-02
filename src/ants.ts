@@ -23,24 +23,21 @@ const pickHelper = new PickHelper(canvas);
 let running = true;
 let previousTime = 0;
 
-function main() {
-  // create ambient light
-  const color = 0xffffff;
-  const intesntiy = 1;
-  const light = new THREE.AmbientLight(color, intesntiy);
-  scene.add(light);
-
+function init() {
+  // set camera position
   camera.position.set(Settings.WIDTH / 2, 30, 0);
   const controls = new MapControls(camera, renderer.domElement);
   controls.target.set(Settings.WIDTH / 2, 0, Settings.HEIGHT / 2);
   controls.update();
 
+  // Add cell mouse picking
   document.addEventListener('mousedown', (e) => pickCell());
 }
 
 // render loop
 function render(time: number) {
   // calculate the elapsed time
+  // note at the moment this is off on the first frame
   let delta = time - previousTime;
   previousTime = time;
 
@@ -99,5 +96,5 @@ function createCamera() {
   return new THREE.PerspectiveCamera(fov, aspect, near, far);
 }
 
-main();
+init();
 start();

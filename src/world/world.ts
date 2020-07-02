@@ -54,5 +54,9 @@ export default class World {
     this.colonies.forEach((c) => c.update(delta));
     this.ants.forEach((a) => a.update(delta));
     this.food.forEach((f) => f.update(delta));
+
+    // TODO - clean up any removed entities
+    // remove dead ants
+    // remove finished food
   }
 }

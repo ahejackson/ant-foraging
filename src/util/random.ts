@@ -10,4 +10,11 @@ export default class Random {
   next() {
     return this.rng();
   }
+
+  range(min: number, max?: number) {
+    if (!max) {
+      return min * this.rng();
+    }
+    return min + (max - min) * this.rng();
+  }
 }
