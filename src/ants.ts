@@ -20,7 +20,7 @@ scene.background = new THREE.Color(0xdddddd);
 const sim: AntSim = new AntSim(scene);
 const pickHelper = new PickHelper(canvas);
 
-let running = false;
+let running = true;
 let stepOnce = false;
 let previousTime = 0;
 

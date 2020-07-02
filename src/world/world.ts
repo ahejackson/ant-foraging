@@ -4,6 +4,8 @@ import Colony from '../entities/colony';
 import Terrain from '../entities/terrain';
 import { Scene } from 'three';
 import Pheremone from '../pheremone/pheremone';
+import { AntBehaviour } from '../behaviours/ant-behaviour';
+import { HOME_PHEREMONE_MAX } from '../sim/settings';
 
 export default class World {
   ants: Ant[] = [];
@@ -25,8 +27,8 @@ export default class World {
     return terrain;
   }
 
-  createAnt(x: number, y: number, colony: Colony) {
-    const ant = new Ant(x, y, colony);
+  createAnt(x: number, y: number, colony: Colony, behaviour: AntBehaviour) {
+    const ant = new Ant(x, y, this, colony, behaviour);
     this.scene.add(ant.mesh);
     this.ants.push(ant);
     return ant;
@@ -63,5 +65,17 @@ export default class World {
     // TODO - clean up any removed entities
     // remove dead ants
     // remove finished food
+  }
+
+  // TODO - temporary methods to improve
+  addHomePheremone(x: number, y: number) {
+    const cX = Math.floor(x);
+    const cY = Math.floor(y);
+    this.pheremones[0].pheremoneAt(cX, cY)[0] = HOME_PHEREMONE_MAX;
+    this.pheremones[0].pheremoneAt(cX, cY)[1] = 0;
+  }
+
+  isCellPassable(x: number, y: number) {
+    return x >= 0 && x < this.width && y >= 0 && y < this.height;
   }
 }

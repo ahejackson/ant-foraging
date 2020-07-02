@@ -3,11 +3,14 @@ import * as Settings from './settings';
 import World from '../world/world';
 import { Scene } from 'three';
 import Timer from '../util/timer';
+import { AntBehaviour } from '../behaviours/ant-behaviour';
+import { RandomBehaviour } from '../behaviours/random-behaviour';
 
 export default class AntSim {
   static RNG: RNG;
   world: World;
   antSpawnTimer: Timer;
+  antBehaviour: AntBehaviour;
 
   constructor(readonly scene: Scene) {
     // 1. Setup the log
@@ -18,13 +21,16 @@ export default class AntSim {
     AntSim.RNG = new RNG(seed);
     console.log(`seed=${AntSim.RNG.seed}`);
 
-    // 3. Setup the world
+    // 3. Setup the ant's behaviour
+    this.antBehaviour = new RandomBehaviour();
+
+    // 4. Setup the world
     this.world = new World(Settings.WIDTH, Settings.HEIGHT, scene);
 
-    // 4. Setup the map
+    // 5. Setup the map
     this.setupMap();
 
-    // 5. Setup ant spawn timer
+    // 6. Setup ant spawn timer
     this.antSpawnTimer = new Timer();
   }
 
@@ -46,7 +52,8 @@ export default class AntSim {
           this.world.createAnt(
             AntSim.RNG.range(Settings.WIDTH),
             AntSim.RNG.range(Settings.HEIGHT),
-            this.world.colonies[0]
+            this.world.colonies[0],
+            this.antBehaviour
           );
         }
       }
