@@ -1,7 +1,8 @@
 import * as THREE from 'three';
+import * as Settings from './sim/settings';
 import { MapControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import World from './world/world';
 import PickHelper from './util/pick-helper';
+import AntSim from './sim/ant-sim';
 
 /*
  * The main file
@@ -16,34 +17,25 @@ const camera = createCamera();
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xdddddd);
 
+const sim: AntSim = new AntSim(scene);
 const pickHelper = new PickHelper(canvas);
-
-// world
-const width = 20;
-const height = 20;
-const world = new World(width, height, scene);
 
 let running = true;
 let previousTime = 0;
 
 function main() {
-  world.createTerrain(0, 0, width, height);
-  world.createAnt(0, 0);
-  world.createAnt(19, 19);
-  world.createColony(10, 10);
-  world.createFood(17, 3);
-  world.createPheremone(0, 0, width, height);
-
   // create ambient light
   const color = 0xffffff;
   const intesntiy = 1;
   const light = new THREE.AmbientLight(color, intesntiy);
   scene.add(light);
 
-  camera.position.set(width / 2, 30, 0);
+  camera.position.set(Settings.WIDTH / 2, 30, 0);
   const controls = new MapControls(camera, renderer.domElement);
-  controls.target.set(width / 2, 0, height / 2);
+  controls.target.set(Settings.WIDTH / 2, 0, Settings.HEIGHT / 2);
   controls.update();
+
+  document.addEventListener('mousedown', (e) => pickCell());
 }
 
 // render loop
@@ -58,9 +50,7 @@ function render(time: number) {
     camera.updateProjectionMatrix();
   }
 
-  update(delta);
-
-  pickHelper.pick(pickHelper.mouse, scene, camera);
+  sim.update(delta);
   renderer.render(scene, camera);
 
   if (running) {
@@ -68,12 +58,24 @@ function render(time: number) {
   }
 }
 
-function update(delta: number) {
-  world.update(delta);
-}
-
 function start() {
   requestAnimationFrame(render);
+}
+
+// Temporary function to add pheremone to a cell
+function pickCell() {
+  let cell = pickHelper.pick(
+    pickHelper.mouse,
+    sim.world.pheremones[0].mesh,
+    camera
+  );
+
+  if (cell) {
+    console.log(`Cell: (${cell.x}, ${cell.y})`);
+    sim.world.pheremones[0].pheremoneAt(cell.x, cell.y)[0] =
+      Settings.HOME_PHEREMONE_MAX;
+    sim.world.pheremones[0].pheremoneAt(cell.x, cell.y)[1] = 0;
+  }
 }
 
 // Keep the display responsive

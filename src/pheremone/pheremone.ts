@@ -20,21 +20,26 @@ export default class Pheremone {
   materials: MeshBasicMaterial[] = [];
   mesh: Group;
 
-  constructor(x: number, y: number, width: number, height: number) {
+  constructor(
+    readonly x: number,
+    readonly y: number,
+    readonly width: number,
+    readonly height: number
+  ) {
     const group = new Group();
     this.materials = this.createMaterials();
 
-    for (let j = 0; j < height; j++) {
-      this.pheremone[j] = [];
-      this.cells[j] = [];
+    for (let cY = 0; cY < height; cY++) {
+      this.pheremone[cY] = [];
+      this.cells[cY] = [];
 
-      for (let i = 0; i < width; i++) {
-        this.pheremone[j][i] = [0, 0];
+      for (let cX = 0; cX < width; cX++) {
+        this.pheremone[cY][cX] = [0, 0];
 
-        this.cells[j][i] = new Mesh(Pheremone.GEOMETRY, this.materials[0]);
-        this.cells[j][i].rotation.x = Math.PI * -0.5;
-        this.cells[j][i].position.set(i, 0.01, j);
-        group.add(this.cells[j][i]);
+        this.cells[cY][cX] = new Mesh(Pheremone.GEOMETRY, this.materials[0]);
+        this.cells[cY][cX].rotation.x = Math.PI * -0.5;
+        this.cells[cY][cX].position.set(cX, 0.01, cY);
+        group.add(this.cells[cY][cX]);
       }
     }
     this.mesh = group;
@@ -70,5 +75,19 @@ export default class Pheremone {
     );
   }
 
-  update(delta: number) {}
+  pheremoneAt(cX: number, cY: number) {
+    return this.pheremone[cY][cX];
+  }
+
+  update(delta: number) {
+    for (let cY = 0; cY < this.height; cY++) {
+      for (let cX = 0; cX < this.width; cX++) {
+        // update value
+        this.pheremone[cY][cX][0] = Math.max(this.pheremone[cY][cX][0] - 1, 0);
+        this.cells[cY][cX].material = this.materials[
+          Math.floor((this.pheremone[cY][cX][0] / 256) * this.materials.length)
+        ];
+      }
+    }
+  }
 }

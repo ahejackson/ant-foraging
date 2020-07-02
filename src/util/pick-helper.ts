@@ -6,6 +6,7 @@ import {
   MeshBasicMaterial,
   Material,
   Camera,
+  Object3D,
 } from 'three';
 
 export default class PickHelper {
@@ -23,8 +24,8 @@ export default class PickHelper {
     this.pickedObjectSavedMaterial = this.pickedObjectMaterial;
 
     document.addEventListener('mousemove', (e) => this.setPickPosition(e));
-    document.addEventListener('mouseout', (e) => this.clearPickPosition(e));
-    document.addEventListener('mouseleave', (e) => this.clearPickPosition(e));
+    document.addEventListener('mouseout', () => this.clearPickPosition());
+    document.addEventListener('mouseleave', () => this.clearPickPosition());
     document.addEventListener(
       'touchstart',
       (event) => {
@@ -42,7 +43,7 @@ export default class PickHelper {
     document.addEventListener('touchend', this.clearPickPosition);
   }
 
-  pick(normalizedPosition: Vector2, scene: Scene, camera: Camera) {
+  pick(normalizedPosition: Vector2, root: Object3D, camera: Camera) {
     // restore the color if there is a picked object
     if (this.pickedObject) {
       this.pickedObject.material = this.pickedObjectSavedMaterial;
@@ -53,15 +54,21 @@ export default class PickHelper {
     this.raycaster.setFromCamera(normalizedPosition, camera);
 
     // get the list of objects the ray intersected
-    const intersectedObjects = this.raycaster.intersectObjects(scene.children);
+    const intersectedObjects = this.raycaster.intersectObjects(root.children);
 
     if (intersectedObjects.length) {
       // pick the first object. It's the closest one
       this.pickedObject = intersectedObjects[0].object as Mesh;
+
       // save its color
       this.pickedObjectSavedMaterial = this.pickedObject.material;
       // set its emissive color to flashing red/yellow
       this.pickedObject.material = this.pickedObjectMaterial;
+
+      return new Vector2(
+        this.pickedObject.position.x,
+        this.pickedObject.position.z
+      );
     }
   }
 
