@@ -17,7 +17,8 @@ import {
 /* This file is responsible for all mesh creation */
 
 // ANT
-const ANT_GEOMETRY = new BoxBufferGeometry(1, 0.5, 0.7);
+export const ANT_HEIGHT = 0.25;
+const ANT_GEOMETRY = new BoxBufferGeometry(0.7, 0.5, 1);
 const ANT_MATERIAL = new MeshBasicMaterial({
   color: 0x0000dd,
 });

@@ -22,30 +22,35 @@ export default class World {
     const terrain = new Terrain(width, height);
     this.scene.add(terrain.mesh);
     this.terrain.push(terrain);
+    return terrain;
   }
 
-  createAnt(x: number, y: number) {
-    const ant = new Ant(x, y);
+  createAnt(x: number, y: number, colony: Colony) {
+    const ant = new Ant(x, y, colony);
     this.scene.add(ant.mesh);
     this.ants.push(ant);
+    return ant;
   }
 
   createColony(x: number, y: number) {
     const colony = new Colony(x, y);
     this.scene.add(colony.mesh);
     this.colonies.push(colony);
+    return colony;
   }
 
   createFood(x: number, y: number) {
     const food = new Food(x, y);
     this.scene.add(food.mesh);
     this.food.push(food);
+    return food;
   }
 
   createPheremone(x: number, y: number, width: number, height: number) {
     const pheremone = new Pheremone(x, y, width, height);
     this.scene.add(pheremone.mesh);
     this.pheremones.push(pheremone);
+    return pheremone;
   }
 
   update(delta: number) {

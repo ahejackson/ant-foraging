@@ -1,7 +1,7 @@
 // Ants
-export const MAX_ANTS = 10; //200;
+export const MAX_ANTS = 20; //200;
 export const ANTS_PER_SPAWN = 1;
-export const ANT_SPAWN_INTERVAL = 2000; //200;
+export const ANT_SPAWN_INTERVAL = 200; //200;
 
 // World
 export const WIDTH = 20; // 200;
@@ -10,7 +10,7 @@ export const HEIGHT = 20; //200;
 // from AntColony
 export const ANT_IMMORTAL = false;
 export const ANT_LIFETIME = 500; //600;
-export const ANT_SPEED = 240;
+export const ANT_SPEED = 5;
 export const ANT_VISION = 30;
 export const ANT_CURIOSITY = 1; // 4
 

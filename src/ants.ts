@@ -20,7 +20,8 @@ scene.background = new THREE.Color(0xdddddd);
 const sim: AntSim = new AntSim(scene);
 const pickHelper = new PickHelper(canvas);
 
-let running = true;
+let running = false;
+let stepOnce = false;
 let previousTime = 0;
 
 function init() {
@@ -31,7 +32,24 @@ function init() {
   controls.update();
 
   // Add cell mouse picking
-  document.addEventListener('mousedown', (e) => pickCell());
+  document.addEventListener('mousedown', () => pickCell(), false);
+
+  document.addEventListener(
+    'keyup',
+    (e: KeyboardEvent) => {
+      switch (e.code) {
+        case 'Space':
+          running = !running;
+          console.log(`running=${running}`);
+          break;
+        case 'KeyS':
+          stepOnce = true;
+          console.log('stepping once');
+          break;
+      }
+    },
+    false
+  );
 }
 
 // render loop
@@ -47,12 +65,13 @@ function render(time: number) {
     camera.updateProjectionMatrix();
   }
 
-  sim.update(delta);
+  if (running || stepOnce) {
+    sim.update(delta);
+    stepOnce = false;
+  }
   renderer.render(scene, camera);
 
-  if (running) {
-    requestAnimationFrame(render);
-  }
+  requestAnimationFrame(render);
 }
 
 function start() {
