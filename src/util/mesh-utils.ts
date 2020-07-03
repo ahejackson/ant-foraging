@@ -18,8 +18,8 @@ import {
 
 // ANT
 export const ANT_HEIGHT = 0.25;
-const ANT_GEOMETRY = new BoxBufferGeometry(0.7, 0.5, 1);
-const ANT_MATERIAL = new MeshBasicMaterial({
+export const ANT_GEOMETRY = new BoxBufferGeometry(0.7, 0.5, 1);
+export const ANT_MATERIAL = new MeshBasicMaterial({
   color: 0x0000dd,
 });
 
@@ -28,7 +28,7 @@ export function createAntMesh() {
 }
 
 // COLONY
-const COLONY_GEOMETRY = new SphereBufferGeometry(
+export const COLONY_GEOMETRY = new SphereBufferGeometry(
   2,
   8,
   8,
@@ -37,7 +37,7 @@ const COLONY_GEOMETRY = new SphereBufferGeometry(
   0,
   0.5 * Math.PI
 );
-const COLONY_MATERIAL = new MeshBasicMaterial({
+export const COLONY_MATERIAL = new MeshBasicMaterial({
   color: 0x222222,
 });
 
@@ -46,8 +46,8 @@ export function createColonyMesh() {
 }
 
 // FOOD
-const FOOD_GEOMETRY = new BoxGeometry(1, 1, 1);
-const FOOD_MATERIAL = new MeshBasicMaterial({
+export const FOOD_GEOMETRY = new BoxGeometry(1, 1, 1);
+export const FOOD_MATERIAL = new MeshBasicMaterial({
   color: 0xdddd00,
 });
 
@@ -56,22 +56,15 @@ export function createFoodMesh() {
 }
 
 // TERRAIN
-export function createTerrainMesh(width: number, height: number) {
-  const loader = new TextureLoader();
-  const texture = loader.load(
-    'https://threejsfundamentals.org/threejs/resources/images/checker.png'
-  );
-  texture.wrapS = RepeatWrapping;
-  texture.wrapT = RepeatWrapping;
-  texture.magFilter = NearestFilter;
-  texture.repeat.set(width / 2, height / 2);
 
+export const TERRAIN_MATERIAL = new MeshBasicMaterial({
+  color: 0x999999,
+  side: DoubleSide,
+});
+
+export function createTerrainMesh(width: number, height: number) {
   const terrainGeo = new PlaneBufferGeometry(width, height);
-  const terrainMat = new MeshPhongMaterial({
-    map: texture,
-    side: DoubleSide,
-  });
-  const terrain = new Mesh(terrainGeo, terrainMat);
+  const terrain = new Mesh(terrainGeo, TERRAIN_MATERIAL);
 
   // rotate the mesh and reposition to make world space match mesh space
   terrain.rotation.x = Math.PI * -0.5;

@@ -16,12 +16,14 @@ export class RandomBehaviour implements AntBehaviour {
 
   nextAction(ant: Ant, world: World): void {
     // Get the passable directions
-    // Randomly pick one
-
-    ant.goal = new Vector3(
-      AntSim.RNG.range(world.width),
-      ANT_HEIGHT,
-      AntSim.RNG.range(world.height)
+    const options = world.getPassableAdjacentCells(
+      ant.mesh.position.x,
+      ant.mesh.position.z
     );
+
+    // Randomly pick one
+    const target = AntSim.RNG.pick(options);
+
+    ant.goal = new Vector3(target.x, ANT_HEIGHT, target.y);
   }
 }

@@ -5,6 +5,8 @@ import {
   PlaneBufferGeometry,
   Mesh,
 } from 'three';
+import { HOME_PHEREMONE_MAX } from '../sim/settings';
+import { TERRAIN_MATERIAL } from '../util/mesh-utils';
 
 export default class Pheremone {
   // a pheremone layer has a width, a height (in cells)
@@ -84,9 +86,15 @@ export default class Pheremone {
       for (let cX = 0; cX < this.width; cX++) {
         // update value
         this.pheremone[cY][cX][0] = Math.max(this.pheremone[cY][cX][0] - 1, 0);
-        this.cells[cY][cX].material = this.materials[
-          Math.floor((this.pheremone[cY][cX][0] / 256) * this.materials.length)
-        ];
+        this.cells[cY][cX].material =
+          this.pheremone[cY][cX][0] > 0
+            ? this.materials[
+                Math.floor(
+                  (this.pheremone[cY][cX][0] / HOME_PHEREMONE_MAX) *
+                    this.materials.length
+                )
+              ]
+            : TERRAIN_MATERIAL;
       }
     }
   }

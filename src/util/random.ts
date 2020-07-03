@@ -17,4 +17,8 @@ export default class Random {
     }
     return min + (max - min) * this.rng();
   }
+
+  pick<T>(array: T[]) {
+    return array[Math.floor(array.length * this.rng())];
+  }
 }

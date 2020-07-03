@@ -50,8 +50,8 @@ export default class AntSim {
 
         for (let i = 0; i < Settings.ANTS_PER_SPAWN; i++) {
           this.world.createAnt(
-            AntSim.RNG.range(Settings.WIDTH),
-            AntSim.RNG.range(Settings.HEIGHT),
+            this.world.colonies[0].mesh.position.x,
+            this.world.colonies[0].mesh.position.z,
             this.world.colonies[0],
             this.antBehaviour
           );
