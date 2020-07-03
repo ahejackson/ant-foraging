@@ -79,3 +79,13 @@ export function createTerrainMesh(width: number, height: number) {
 
   return terrainGroup;
 }
+
+export const OBSTACLE_HEIGHT = 1;
+export const OBSTACLE_GEOMETRY = new BoxGeometry(1, 2, 1);
+export const OBSTACLE_MATERIAL = new MeshBasicMaterial({
+  color: 0x454545,
+});
+
+export function createObstacleMesh() {
+  return new Mesh(OBSTACLE_GEOMETRY, OBSTACLE_MATERIAL);
+}

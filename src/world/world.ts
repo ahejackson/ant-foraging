@@ -6,6 +6,7 @@ import { Scene, Vector2 } from 'three';
 import Pheremone from '../pheremone/pheremone';
 import { AntBehaviour } from '../behaviours/ant-behaviour';
 import { HOME_PHEREMONE_MAX } from '../sim/settings';
+import { createObstacleMesh, OBSTACLE_HEIGHT } from '../util/mesh-utils';
 
 export default class World {
   ants: Ant[] = [];
@@ -14,17 +15,32 @@ export default class World {
   terrain: Terrain[] = [];
   pheremones: Pheremone[] = [];
 
+  cellPassable: boolean[][];
+
   constructor(
     readonly width: number,
     readonly height: number,
     readonly scene: Scene
-  ) {}
+  ) {
+    // create and fill the is passable array
+    this.cellPassable = Array<boolean[]>(this.height);
+    for (let j = 0; j < this.height; j++) {
+      this.cellPassable[j] = Array<boolean>(this.width).fill(true);
+    }
+  }
 
   createTerrain(x: number, y: number, width: number, height: number) {
     const terrain = new Terrain(width, height);
     this.scene.add(terrain.mesh);
     this.terrain.push(terrain);
     return terrain;
+  }
+
+  createObstacle(x: number, y: number) {
+    const obstacle = createObstacleMesh();
+    obstacle.position.set(x, OBSTACLE_HEIGHT, y);
+    this.scene.add(obstacle);
+    this.cellPassable[Math.floor(y)][Math.floor(x)] = false;
   }
 
   createAnt(x: number, y: number, colony: Colony, behaviour: AntBehaviour) {
@@ -56,7 +72,7 @@ export default class World {
   }
 
   update(delta: number) {
-    this.terrain.forEach((t) => t.update(delta));
+    // this.terrain.forEach((t) => t.update(delta));
     this.pheremones.forEach((p) => p.update(delta));
     this.colonies.forEach((c) => c.update(delta));
     this.ants.forEach((a) => a.update(delta));
@@ -76,7 +92,13 @@ export default class World {
   }
 
   isCellPassable(x: number, y: number) {
-    return x >= 0 && x < this.width && y >= 0 && y < this.height;
+    return (
+      x >= 0 &&
+      x < this.width &&
+      y >= 0 &&
+      y < this.height &&
+      this.cellPassable[Math.floor(y)][Math.floor(x)]
+    );
   }
 
   getPassableAdjacentCells(x: number, y: number) {
@@ -88,17 +110,17 @@ export default class World {
     if (cY > 0) {
       if (cX > 0) {
         // North West
-        if (this.isCellPassable(cY - 1, cX - 1)) {
+        if (this.cellPassable[cY - 1][cX - 1]) {
           res.push(new Vector2(cX - 1, cY - 1));
         }
       }
       // North
-      if (this.isCellPassable(cY - 1, cX)) {
+      if (this.cellPassable[cY - 1][cX]) {
         res.push(new Vector2(cX, cY - 1));
       }
       // North East
       if (cX < this.width - 1) {
-        if (this.isCellPassable(cY - 1, cX + 1)) {
+        if (this.cellPassable[cY - 1][cX + 1]) {
           res.push(new Vector2(cX + 1, cY - 1));
         }
       }
@@ -106,14 +128,14 @@ export default class World {
 
     // West
     if (cX > 0) {
-      if (this.isCellPassable(cY, cX - 1)) {
+      if (this.cellPassable[cY][cX - 1]) {
         res.push(new Vector2(cX - 1, cY));
       }
     }
 
     // East
     if (cX < this.width - 1) {
-      if (this.isCellPassable(cY, cX + 1)) {
+      if (this.cellPassable[cY][cX + 1]) {
         res.push(new Vector2(cX + 1, cY));
       }
     }
@@ -121,22 +143,25 @@ export default class World {
     if (cY < this.height - 1) {
       // South West
       if (cX > 0) {
-        if (this.isCellPassable(cY + 1, cX - 1)) {
+        if (this.cellPassable[cY + 1][cX - 1]) {
           res.push(new Vector2(cX - 1, cY + 1));
         }
       }
       // South
-      if (this.isCellPassable(cY + 1, cX)) {
+      if (this.cellPassable[cY + 1][cX]) {
         res.push(new Vector2(cX, cY + 1));
       }
       // South East
       if (cX < this.width - 1) {
-        if (this.isCellPassable(cY + 1, cX + 1)) {
+        if (this.cellPassable[cY + 1][cX + 1]) {
           res.push(new Vector2(cX + 1, cY + 1));
         }
       }
     }
 
+    if (res.length == 0) {
+      console.log(`nowhere to go from (${cX},${cY})`);
+    }
     return res;
   }
 }

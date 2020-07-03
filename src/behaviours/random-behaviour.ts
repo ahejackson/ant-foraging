@@ -22,8 +22,9 @@ export class RandomBehaviour implements AntBehaviour {
     );
 
     // Randomly pick one
-    const target = AntSim.RNG.pick(options);
-
-    ant.goal = new Vector3(target.x, ANT_HEIGHT, target.y);
+    if (options.length > 0) {
+      const target = AntSim.RNG.pick(options);
+      ant.goal = new Vector3(target.x, ANT_HEIGHT, target.y);
+    }
   }
 }

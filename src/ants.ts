@@ -88,9 +88,16 @@ function pickCell() {
 
   if (cell) {
     console.log(`Cell: (${cell.x}, ${cell.y})`);
-    sim.world.pheremones[0].pheremoneAt(cell.x, cell.y)[0] =
-      Settings.HOME_PHEREMONE_MAX;
-    sim.world.pheremones[0].pheremoneAt(cell.x, cell.y)[1] = 0;
+
+    // if there's no obstacle in this square, add one
+    if (sim.world.isCellPassable(cell.x, cell.y)) {
+      sim.world.createObstacle(cell.x, cell.y);
+    }
+
+    // Old code (for adding pheremone)
+    // sim.world.pheremones[0].pheremoneAt(cell.x, cell.y)[0] =
+    //   Settings.HOME_PHEREMONE_MAX;
+    // sim.world.pheremones[0].pheremoneAt(cell.x, cell.y)[1] = 0;
   }
 }
 
