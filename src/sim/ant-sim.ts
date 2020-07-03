@@ -1,10 +1,15 @@
-import RNG from '../util/random';
-import * as Settings from './settings';
-import World from '../world/world';
 import { Scene } from 'three';
-import Timer from '../util/timer';
 import { AntBehaviour } from '../behaviours/ant-behaviour';
 import { RandomBehaviour } from '../behaviours/random-behaviour';
+import Pheremone from '../pheremone/pheremone';
+import {
+  createFoodPheremoneMaterials,
+  createHomePheremoneMaterials,
+} from '../util/mesh-utils';
+import RNG from '../util/random';
+import Timer from '../util/timer';
+import World from '../world/world';
+import * as Settings from './settings';
 
 export default class AntSim {
   static RNG: RNG;
@@ -30,7 +35,27 @@ export default class AntSim {
     // 5. Setup the map
     this.setupMap();
 
-    // 6. Setup ant spawn timer
+    // 6. Setup the pheremones
+    this.world.pheremones.addLayer(
+      new Pheremone(
+        'HOME',
+        Settings.HOME_PHEREMONE_MAX,
+        Settings.HOME_PHEREMONE_INCREMENT,
+        Settings.HOME_PHEREMONE_DECAY_INTERVAL,
+        createHomePheremoneMaterials()
+      )
+    );
+    this.world.pheremones.addLayer(
+      new Pheremone(
+        'FOOD',
+        Settings.FOOD_PHEREMONE_MAX,
+        Settings.FOOD_PHEREMONE_INCREMENT,
+        Settings.FOOD_PHEREMONE_DECAY_INTERVAL,
+        createFoodPheremoneMaterials()
+      )
+    );
+
+    // 7. Setup ant spawn timer
     this.antSpawnTimer = new Timer();
   }
 
@@ -38,7 +63,6 @@ export default class AntSim {
     this.world.createTerrain(0, 0, Settings.WIDTH, Settings.HEIGHT);
     this.world.createColony(10, 10);
     this.world.createFood(17, 3);
-    this.world.createPheremone(0, 0, Settings.WIDTH, Settings.HEIGHT);
   }
 
   update(delta: number) {

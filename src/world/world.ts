@@ -3,9 +3,8 @@ import Food from '../entities/food';
 import Colony from '../entities/colony';
 import Terrain from '../entities/terrain';
 import { Scene, Vector2 } from 'three';
-import Pheremone from '../pheremone/pheremone';
+import PheremoneLayers from '../pheremone/pheremone-layers';
 import { AntBehaviour } from '../behaviours/ant-behaviour';
-import { HOME_PHEREMONE_MAX } from '../sim/settings';
 import { createObstacleMesh, OBSTACLE_HEIGHT } from '../util/mesh-utils';
 
 export default class World {
@@ -13,8 +12,8 @@ export default class World {
   food: Food[] = [];
   colonies: Colony[] = [];
   terrain: Terrain[] = [];
-  pheremones: Pheremone[] = [];
 
+  pheremones: PheremoneLayers;
   cellPassable: boolean[][];
 
   constructor(
@@ -27,6 +26,8 @@ export default class World {
     for (let j = 0; j < this.height; j++) {
       this.cellPassable[j] = Array<boolean>(this.width).fill(true);
     }
+
+    this.pheremones = this.createPheremone(0, 0, width, height);
   }
 
   createTerrain(x: number, y: number, width: number, height: number) {
@@ -65,15 +66,13 @@ export default class World {
   }
 
   createPheremone(x: number, y: number, width: number, height: number) {
-    const pheremone = new Pheremone(x, y, width, height);
-    this.scene.add(pheremone.mesh);
-    this.pheremones.push(pheremone);
-    return pheremone;
+    this.pheremones = new PheremoneLayers(x, y, width, height);
+    this.scene.add(this.pheremones.mesh);
+    return this.pheremones;
   }
 
   update(delta: number) {
-    // this.terrain.forEach((t) => t.update(delta));
-    this.pheremones.forEach((p) => p.update(delta));
+    this.pheremones.update(delta);
     this.colonies.forEach((c) => c.update(delta));
     this.ants.forEach((a) => a.update(delta));
     this.food.forEach((f) => f.update(delta));
@@ -85,10 +84,7 @@ export default class World {
 
   // TODO - temporary methods to improve
   addHomePheremone(x: number, y: number) {
-    const cX = Math.floor(x);
-    const cY = Math.floor(y);
-    this.pheremones[0].pheremoneAt(cX, cY)[0] = HOME_PHEREMONE_MAX;
-    this.pheremones[0].pheremoneAt(cX, cY)[1] = 0;
+    this.pheremones.addPheremone('HOME', x, y);
   }
 
   isCellPassable(x: number, y: number) {

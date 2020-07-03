@@ -89,3 +89,62 @@ export const OBSTACLE_MATERIAL = new MeshBasicMaterial({
 export function createObstacleMesh() {
   return new Mesh(OBSTACLE_GEOMETRY, OBSTACLE_MATERIAL);
 }
+
+// PHEREMONES
+export const PHEREMONE_CELL_HEIGHT = 0.01;
+export const PHEREMONE_CELL_GEOMETRY = new PlaneBufferGeometry(1, 1);
+
+export function createPheremoneGridMesh(
+  width: number,
+  height: number
+): [Mesh[][], Group] {
+  const cells = Array<Mesh[]>(height);
+  const cellGroup = new Group();
+  for (let cY = 0; cY < height; cY++) {
+    cells[cY] = Array<Mesh>(width);
+
+    for (let cX = 0; cX < width; cX++) {
+      cells[cY][cX] = new Mesh(PHEREMONE_CELL_GEOMETRY, TERRAIN_MATERIAL);
+      cells[cY][cX].rotation.x = Math.PI * -0.5;
+      cells[cY][cX].position.set(cX, PHEREMONE_CELL_HEIGHT, cY);
+      cellGroup.add(cells[cY][cX]);
+    }
+  }
+  return [cells, cellGroup];
+}
+
+export const HOME_PHEREMONE_COLORS = [
+  0x800026,
+  0xbd0026,
+  0xe31a1c,
+  0xfc4e2a,
+  0xfd8d3c,
+  0xfeb24c,
+  0xfed976,
+  0xffeda0,
+  0xffffcc,
+];
+
+export function createHomePheremoneMaterials() {
+  return HOME_PHEREMONE_COLORS.map(
+    (color) => new MeshBasicMaterial({ color, side: DoubleSide })
+  );
+}
+
+export const FOOD_PHEREMONE_COLORS = [
+  0x084081,
+  0x0868ac,
+  0x2b8dbe,
+  0x4eb4d3,
+  0x7bccc4,
+  0xa8ddb5,
+  0xccebc5,
+  0xe0f3db,
+  0xf7fcf0,
+];
+
+export function createFoodPheremoneMaterials() {
+  return FOOD_PHEREMONE_COLORS.map(
+    (color) => new MeshBasicMaterial({ color, side: DoubleSide })
+  );
+}

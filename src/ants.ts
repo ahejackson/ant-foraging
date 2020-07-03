@@ -23,6 +23,7 @@ const pickHelper = new PickHelper(canvas);
 let running = true;
 let stepOnce = false;
 let previousTime = 0;
+let displayPheremone: null | 'HOME' | 'FOOD' = null;
 
 function init() {
   // set camera position
@@ -46,6 +47,22 @@ function init() {
           stepOnce = true;
           console.log('stepping once');
           break;
+        case 'KeyP':
+          switch (displayPheremone) {
+            case null:
+              displayPheremone = 'HOME';
+              console.log(`Showing home pheremone`);
+              break;
+            case 'HOME':
+              displayPheremone = 'FOOD';
+              console.log(`Showing food pheremone`);
+              break;
+            case 'FOOD':
+              displayPheremone = null;
+              console.log(`Not showing any pheremone`);
+              break;
+          }
+          sim.world.pheremones.displayPheremone = displayPheremone;
       }
     },
     false
@@ -82,7 +99,7 @@ function start() {
 function pickCell() {
   let cell = pickHelper.pick(
     pickHelper.mouse,
-    sim.world.pheremones[0].mesh,
+    sim.world.pheremones.mesh,
     camera
   );
 
