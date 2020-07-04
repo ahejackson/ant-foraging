@@ -4,8 +4,8 @@ export const ANTS_PER_SPAWN = 1;
 export const ANT_SPAWN_INTERVAL = 200; //200;
 
 // World
-export const WIDTH = 50; // 200;
-export const HEIGHT = 50; //200;
+// export const WIDTH = 50; // 200;
+// export const HEIGHT = 50; //200;
 
 // from AntColony
 export const ANT_IMMORTAL = false;

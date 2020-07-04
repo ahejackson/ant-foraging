@@ -1,5 +1,5 @@
-import { DoubleSide, Group, MeshBasicMaterial, Mesh } from 'three';
-import { TERRAIN_MATERIAL, createPheremoneGridMesh } from '../util/mesh-utils';
+import { Group, Mesh } from 'three';
+import { createPheremoneGridMesh, TERRAIN_MATERIAL } from '../util/mesh-utils';
 import Pheremone from './pheremone';
 
 export default class PheremoneLayers {

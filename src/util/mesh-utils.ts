@@ -1,17 +1,13 @@
 import {
-  DoubleSide,
-  Group,
-  MeshPhongMaterial,
-  NearestFilter,
-  PlaneBufferGeometry,
-  RepeatWrapping,
-  TextureLoader,
-  Mesh,
-  GridHelper,
-  BoxGeometry,
-  MeshBasicMaterial,
-  SphereBufferGeometry,
   BoxBufferGeometry,
+  BoxGeometry,
+  DoubleSide,
+  GridHelper,
+  Group,
+  Mesh,
+  MeshBasicMaterial,
+  PlaneBufferGeometry,
+  SphereBufferGeometry,
 } from 'three';
 
 /* This file is responsible for all mesh creation */

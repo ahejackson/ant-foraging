@@ -3,11 +3,17 @@ import { AntBehaviour } from '../behaviours/ant-behaviour';
 import { RandomBehaviour } from '../behaviours/random-behaviour';
 import Pheremone from '../pheremone/pheremone';
 import {
+  importMap,
+  importTerrain,
+  importTerrainCompressed,
+} from '../util/map-utils';
+import {
   createFoodPheremoneMaterials,
   createHomePheremoneMaterials,
 } from '../util/mesh-utils';
 import RNG from '../util/random';
 import Timer from '../util/timer';
+import { AntMap } from '../world/ant-map';
 import World from '../world/world';
 import * as Settings from './settings';
 
@@ -30,10 +36,7 @@ export default class AntSim {
     this.antBehaviour = new RandomBehaviour();
 
     // 4. Setup the world
-    this.world = new World(Settings.WIDTH, Settings.HEIGHT, scene);
-
-    // 5. Setup the map
-    this.setupMap();
+    this.world = this.loadWorld(importMap(), scene);
 
     // 6. Setup the pheremones
     this.world.pheremones.addLayer(
@@ -59,10 +62,40 @@ export default class AntSim {
     this.antSpawnTimer = new Timer();
   }
 
-  setupMap() {
-    this.world.createTerrain(0, 0, Settings.WIDTH, Settings.HEIGHT);
-    this.world.createColony(10, 10);
-    this.world.createFood(17, 3);
+  loadWorld(map: AntMap, scene: Scene) {
+    const world = new World(map.width, map.height, scene);
+    world.createTerrain(0, 0, map.width, map.height);
+
+    if (map.colonies) {
+      map.colonies.forEach((colony) => world.createColony(colony.x, colony.y));
+    }
+
+    if (map.food) {
+      map.food.forEach((food) => world.createFood(food.x, food.y));
+    }
+
+    // load the obstacles either from compressed or uncompressed form
+    if (map.terrainCompressed) {
+      const cells = importTerrainCompressed(map.terrainCompressed);
+      for (let y = 0; y < map.height; y++) {
+        for (let x = 0; x < map.width; x++) {
+          if (!cells[y * map.height + x]) {
+            world.createObstacle(x, y);
+          }
+        }
+      }
+    } else if (map.terrain) {
+      const cells = importTerrain(map.terrain);
+      for (let y = 0; y < map.height; y++) {
+        for (let x = 0; x < map.width; x++) {
+          if (!cells[y][x]) {
+            world.createObstacle(x, y);
+          }
+        }
+      }
+    }
+
+    return world;
   }
 
   update(delta: number) {

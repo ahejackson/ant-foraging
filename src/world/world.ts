@@ -1,10 +1,10 @@
-import Ant from '../entities/ant';
-import Food from '../entities/food';
-import Colony from '../entities/colony';
-import Terrain from '../entities/terrain';
 import { Scene, Vector2 } from 'three';
-import PheremoneLayers from '../pheremone/pheremone-layers';
 import { AntBehaviour } from '../behaviours/ant-behaviour';
+import Ant from '../entities/ant';
+import Colony from '../entities/colony';
+import Food from '../entities/food';
+import Terrain from '../entities/terrain';
+import PheremoneLayers from '../pheremone/pheremone-layers';
 import { createObstacleMesh, OBSTACLE_HEIGHT } from '../util/mesh-utils';
 
 export default class World {
@@ -30,20 +30,6 @@ export default class World {
     this.pheremones = this.createPheremone(0, 0, width, height);
   }
 
-  createTerrain(x: number, y: number, width: number, height: number) {
-    const terrain = new Terrain(width, height);
-    this.scene.add(terrain.mesh);
-    this.terrain.push(terrain);
-    return terrain;
-  }
-
-  createObstacle(x: number, y: number) {
-    const obstacle = createObstacleMesh();
-    obstacle.position.set(x, OBSTACLE_HEIGHT, y);
-    this.scene.add(obstacle);
-    this.cellPassable[Math.floor(y)][Math.floor(x)] = false;
-  }
-
   createAnt(x: number, y: number, colony: Colony, behaviour: AntBehaviour) {
     const ant = new Ant(x, y, this, colony, behaviour);
     this.scene.add(ant.mesh);
@@ -65,10 +51,24 @@ export default class World {
     return food;
   }
 
+  createObstacle(x: number, y: number) {
+    const obstacle = createObstacleMesh();
+    obstacle.position.set(x, OBSTACLE_HEIGHT, y);
+    this.scene.add(obstacle);
+    this.cellPassable[Math.floor(y)][Math.floor(x)] = false;
+  }
+
   createPheremone(x: number, y: number, width: number, height: number) {
     this.pheremones = new PheremoneLayers(x, y, width, height);
     this.scene.add(this.pheremones.mesh);
     return this.pheremones;
+  }
+
+  createTerrain(x: number, y: number, width: number, height: number) {
+    const terrain = new Terrain(width, height);
+    this.scene.add(terrain.mesh);
+    this.terrain.push(terrain);
+    return terrain;
   }
 
   update(delta: number) {

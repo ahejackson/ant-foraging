@@ -3,6 +3,7 @@ import * as Settings from './sim/settings';
 import { MapControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import PickHelper from './util/pick-helper';
 import AntSim from './sim/ant-sim';
+import { exportMap, importMap } from './util/map-utils';
 
 /*
  * The main file
@@ -26,10 +27,13 @@ let previousTime = 0;
 let displayPheremone: null | 'HOME' | 'FOOD' = null;
 
 function init() {
+  // TODO - not sure how to position camera for variable sized map
+  const map = importMap();
+
   // set camera position
-  camera.position.set(Settings.WIDTH / 2, 30, 0);
+  camera.position.set(map.width / 2, 30, 0);
   const controls = new MapControls(camera, renderer.domElement);
-  controls.target.set(Settings.WIDTH / 2, 0, Settings.HEIGHT / 2);
+  controls.target.set(map.width / 2, 0, map.height / 2);
   controls.update();
 
   // Add cell mouse picking
@@ -63,6 +67,13 @@ function init() {
               break;
           }
           sim.world.pheremones.displayPheremone = displayPheremone;
+          break;
+        case 'KeyE':
+          exportMap(sim.world);
+          break;
+        case 'KeyR':
+          importMap();
+          break;
       }
     },
     false
