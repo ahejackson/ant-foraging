@@ -12,16 +12,16 @@ export const ANT_IMMORTAL = false;
 export const ANT_LIFETIME = 500; //600;
 export const ANT_SPEED = 8;
 export const ANT_VISION = 30;
-export const ANT_CURIOSITY = 1; // 4
+export const ANT_CURIOSITY = 0.01; // 4
 
 // Home Pheremone
-export const HOME_PHEREMONE_MAX = 200; //400;
-export const HOME_PHEREMONE_INCREMENT = 8;
+export const HOME_PHEREMONE_MAX = 500; //400;
+export const HOME_PHEREMONE_INCREMENT = 300; // 8 ;
 export const HOME_PHEREMONE_DECAY_INTERVAL = 600;
 
 // Food Pheremone
-export const FOOD_PHEREMONE_MAX = 200; // 72;
-export const FOOD_PHEREMONE_INCREMENT = 8;
+export const FOOD_PHEREMONE_MAX = 500; // 72;
+export const FOOD_PHEREMONE_INCREMENT = 300;
 export const FOOD_PHEREMONE_DECAY_INTERVAL = 600; //800;
 
 // Options

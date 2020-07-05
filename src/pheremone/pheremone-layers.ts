@@ -46,10 +46,18 @@ export default class PheremoneLayers {
     return this.freshness.get(name)![Math.floor(y)][Math.floor(x)];
   }
 
-  addPheremone(name: string, x: number, y: number) {
+  addPheremone(name: string, x: number, y: number, quantity?: number) {
     const cX = Math.floor(x);
     const cY = Math.floor(y);
-    this.values.get(name)![cY][cX] = this.types.get(name)!.max;
+
+    if (!quantity) {
+      quantity = this.types.get(name)!.increment;
+    }
+
+    this.values.get(name)![cY][cX] = Math.min(
+      this.values.get(name)![cY][cX] + quantity,
+      this.types.get(name)!.max
+    );
     this.freshness.get(name)![cY][cX] = 0;
   }
 

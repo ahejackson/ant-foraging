@@ -1,5 +1,10 @@
-import { Mesh, Vector3 } from 'three';
-import { ANT_HEIGHT, createAntMesh } from '../util/mesh-utils';
+import { Mesh, Vector3, Object3D } from 'three';
+import {
+  ANT_HEIGHT,
+  createAntMesh,
+  FOOD_MATERIAL,
+  ANT_MATERIAL,
+} from '../util/mesh-utils';
 import Colony from './colony';
 import World from '../world/world';
 import { AntBehaviour } from '../behaviours/ant-behaviour';
@@ -14,7 +19,7 @@ export enum AntState {
 export default class Ant {
   // Properties
   scent = 'ONE';
-  mesh: Mesh;
+  mesh: Object3D;
 
   // State
   state = AntState.IN_COLONY;
@@ -62,5 +67,15 @@ export default class Ant {
       // if the ant has no goal, it needs a new one
       this.behaviour.nextAction(this, this.world);
     }
+  }
+
+  pickupFood() {
+    this.hasFood = true;
+    (this.mesh as Mesh).material = FOOD_MATERIAL;
+  }
+
+  returnFood() {
+    this.hasFood = false;
+    (this.mesh as Mesh).material = ANT_MATERIAL;
   }
 }

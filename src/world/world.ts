@@ -82,9 +82,16 @@ export default class World {
     // remove finished food
   }
 
-  // TODO - temporary methods to improve
-  addHomePheremone(x: number, y: number) {
-    this.pheremones.addPheremone('HOME', x, y);
+  // check if there is food in the same cell as the given point
+  foodInCell(x: number, y: number) {
+    const cX = Math.floor(x);
+    const cY = Math.floor(y);
+
+    return this.food.filter(
+      (f) =>
+        cX === Math.floor(f.mesh.position.x) &&
+        cY === Math.floor(f.mesh.position.z)
+    );
   }
 
   isCellPassable(x: number, y: number) {

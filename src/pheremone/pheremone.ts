@@ -1,5 +1,8 @@
 import { Material } from 'three';
 
+export const FOOD_PHEREMONE = 'FOOD';
+export const HOME_PHEREMONE = 'HOME';
+
 export default class Pheremone {
   constructor(
     readonly name: string,

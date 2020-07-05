@@ -16,6 +16,7 @@ import Timer from '../util/timer';
 import { AntMap } from '../world/ant-map';
 import World from '../world/world';
 import * as Settings from './settings';
+import { CellBehaviour } from '../behaviours/cell-behaviour';
 
 export default class AntSim {
   static RNG: RNG;
@@ -33,7 +34,7 @@ export default class AntSim {
     console.log(`seed=${AntSim.RNG.seed}`);
 
     // 3. Setup the ant's behaviour
-    this.antBehaviour = new RandomBehaviour();
+    this.antBehaviour = new CellBehaviour();
 
     // 4. Setup the world
     this.world = this.loadWorld(importMap(), scene);

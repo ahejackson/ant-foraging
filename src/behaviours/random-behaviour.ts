@@ -11,7 +11,11 @@ export class RandomBehaviour implements AntBehaviour {
 
   goalReached(ant: Ant, world: World) {
     // Add home pheremone to the path
-    world.addHomePheremone(ant.mesh.position.x, ant.mesh.position.z);
+    world.pheremones.addPheremone(
+      'HOME',
+      ant.mesh.position.x,
+      ant.mesh.position.z
+    );
   }
 
   nextAction(ant: Ant, world: World): void {
