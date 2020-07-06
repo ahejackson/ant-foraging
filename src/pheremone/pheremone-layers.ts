@@ -73,13 +73,33 @@ export default class PheremoneLayers {
         }
 
         // set material
-        this.cells[cY][cX].material =
-          this.displayPheremone == null ||
-          this.values.get(this.displayPheremone)![cY][cX] == 0
-            ? TERRAIN_MATERIAL
-            : this.types
-                .get(this.displayPheremone)!
-                .getMaterial(this.values.get(this.displayPheremone)![cY][cX]);
+        // first reset to blank
+        this.cells[cY][cX].material = TERRAIN_MATERIAL;
+        if (this.displayPheremone === 'STRONGEST') {
+          let strongestPheremone: Pheremone | null = null;
+          let strongestValue = 0;
+
+          for (let [pheremoneName, pheremone] of this.types.entries()) {
+            let value = this.values.get(pheremoneName)![cY][cX];
+            if (value > strongestValue) {
+              strongestValue = value;
+              strongestPheremone = pheremone;
+            }
+          }
+
+          if (strongestPheremone != null) {
+            this.cells[cY][cX].material = strongestPheremone.getMaterial(
+              strongestValue
+            );
+          }
+        } else if (this.displayPheremone != null) {
+          let value = this.values.get(this.displayPheremone)![cY][cX];
+          if (value > 0) {
+            this.cells[cY][cX].material = this.types
+              .get(this.displayPheremone)!
+              .getMaterial(value);
+          }
+        }
       }
     }
   }

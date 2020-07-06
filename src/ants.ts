@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { MapControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import PickHelper from './util/pick-helper';
 import AntSim from './sim/ant-sim';
-import { exportMap, importMap } from './util/map-utils';
+import { loadDefaultMap, saveMap } from './util/map-utils';
+import World from './world/world';
 
 /*
  * The main file
@@ -23,11 +24,11 @@ const pickHelper = new PickHelper(canvas);
 let running = true;
 let stepOnce = false;
 let previousTime = 0;
-let displayPheremone: null | 'HOME' | 'FOOD' = null;
+let displayPheremone: null | 'HOME' | 'FOOD' | 'STRONGEST' = null;
 
 function init() {
   // TODO - not sure how to position camera for variable sized map
-  const map = importMap();
+  const map = loadDefaultMap();
 
   // set camera position
   camera.position.set(map.width / 2, 30, 0);
@@ -51,27 +52,10 @@ function init() {
           console.log('stepping once');
           break;
         case 'KeyP':
-          switch (displayPheremone) {
-            case null:
-              displayPheremone = 'HOME';
-              console.log(`Showing home pheremone`);
-              break;
-            case 'HOME':
-              displayPheremone = 'FOOD';
-              console.log(`Showing food pheremone`);
-              break;
-            case 'FOOD':
-              displayPheremone = null;
-              console.log(`Not showing any pheremone`);
-              break;
-          }
-          sim.world.pheremones.displayPheremone = displayPheremone;
+          cycleDisplayPheremone();
           break;
         case 'KeyE':
-          exportMap(sim.world);
-          break;
-        case 'KeyR':
-          importMap();
+          saveMap(sim.world);
           break;
       }
     },
@@ -119,13 +103,33 @@ function pickCell() {
     // if there's no obstacle in this square, add one
     if (sim.world.isCellPassable(cell.x, cell.y)) {
       sim.world.createObstacle(cell.x, cell.y);
+    } else {
+      // otherwise remove the obstacle that is there
+      sim.world.removeObstacle(cell.x, cell.y);
     }
-
-    // Old code (for adding pheremone)
-    // sim.world.pheremones[0].pheremoneAt(cell.x, cell.y)[0] =
-    //   Settings.HOME_PHEREMONE_MAX;
-    // sim.world.pheremones[0].pheremoneAt(cell.x, cell.y)[1] = 0;
   }
+}
+
+function cycleDisplayPheremone() {
+  switch (displayPheremone) {
+    case null:
+      displayPheremone = 'STRONGEST';
+      console.log(`Showing the strongest pheremone`);
+      break;
+    case 'STRONGEST':
+      displayPheremone = 'HOME';
+      console.log(`Showing home pheremone`);
+      break;
+    case 'HOME':
+      displayPheremone = 'FOOD';
+      console.log(`Showing food pheremone`);
+      break;
+    case 'FOOD':
+      displayPheremone = null;
+      console.log(`Not showing any pheremone`);
+      break;
+  }
+  sim.world.pheremones.displayPheremone = displayPheremone;
 }
 
 // Keep the display responsive

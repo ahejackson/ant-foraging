@@ -5,20 +5,20 @@ import { AntMap } from '../world/ant-map';
 import World from '../world/world';
 import DEFAULT_MAP from '../world/default-map.json';
 
-export function exportMap(world: World) {
-  console.log('Exporting...');
+export function saveMap(world: World) {
+  console.log('Saving...');
 
   const map: AntMap = {
     width: world.width,
     height: world.height,
-    colonies: exportColonies(world.colonies),
-    food: exportFood(world.food),
-    terrainCompressed: exportTerrainCompressed(
+    colonies: saveColonies(world.colonies),
+    food: saveFood(world.food),
+    terrainCompressed: saveTerrainCompressed(
       world.cellPassable,
       world.width,
       world.height
     ),
-    // terrain: exportTerrain(world.cellPassable),
+    // terrain: saveTerrain(world.cellPassable),
   };
 
   saveAs(
@@ -28,7 +28,7 @@ export function exportMap(world: World) {
   return map;
 }
 
-export function exportTerrainCompressed(
+export function saveTerrainCompressed(
   cells: boolean[][],
   width: number,
   height: number
@@ -57,7 +57,7 @@ export function exportTerrainCompressed(
   return `${width},${height}~${btoa(mapString)}`;
 }
 
-export function importTerrainCompressed(s: string) {
+export function loadTerrainCompressed(s: string) {
   const [dimensions, mapString] = s.split('~');
   const [width, height] = dimensions.split(',').map((dim) => parseInt(dim));
 
@@ -71,30 +71,65 @@ export function importTerrainCompressed(s: string) {
     .map((c) => c === '0');
 }
 
-export function exportTerrain(cells: boolean[][]) {
+export function saveTerrain(cells: boolean[][]) {
   return cells
     .map((row) => row.map((cell) => (cell ? '0' : '1')).join(''))
     .join(',');
 }
 
-export function importTerrain(s: string) {
+export function loadTerrain(s: string) {
   const rows = s.split(',');
   return rows.map((row) => [...row].map((cell) => cell === '0'));
 }
 
-export function exportFood(food: Food[]) {
+export function saveFood(food: Food[]) {
   return food.map((f) => {
     return { x: f.mesh.position.x, y: f.mesh.position.z };
   });
 }
 
-export function exportColonies(colonies: Colony[]) {
+export function saveColonies(colonies: Colony[]) {
   return colonies.map((colony) => {
     return { x: colony.mesh.position.x, y: colony.mesh.position.z };
   });
 }
 
-export function importMap() {
+export function loadDefaultMap() {
   const map: AntMap = DEFAULT_MAP;
   return map;
+}
+
+export function loadMap(map: AntMap, world: World) {
+  world.createTerrain(0, 0, map.width, map.height);
+
+  if (map.colonies) {
+    map.colonies.forEach((colony) => world.createColony(colony.x, colony.y));
+  }
+
+  if (map.food) {
+    map.food.forEach((food) => world.createFood(food.x, food.y));
+  }
+
+  // load the obstacles either from compressed or uncompressed form
+  if (map.terrainCompressed) {
+    const cells = loadTerrainCompressed(map.terrainCompressed);
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) {
+        if (!cells[y * map.height + x]) {
+          world.createObstacle(x, y);
+        }
+      }
+    }
+  } else if (map.terrain) {
+    const cells = loadTerrain(map.terrain);
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) {
+        if (!cells[y][x]) {
+          world.createObstacle(x, y);
+        }
+      }
+    }
+  }
+
+  return world;
 }

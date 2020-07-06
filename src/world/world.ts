@@ -1,4 +1,4 @@
-import { Scene, Vector2 } from 'three';
+import { Scene, Vector2, Object3D } from 'three';
 import { AntBehaviour } from '../behaviours/ant-behaviour';
 import Ant from '../entities/ant';
 import Colony from '../entities/colony';
@@ -13,6 +13,7 @@ export default class World {
   food: Food[] = [];
   colonies: Colony[] = [];
   terrain: Terrain[] = [];
+  obstacles: Object3D[] = [];
 
   pheremones: PheremoneLayers;
   cellPassable: boolean[][];
@@ -28,7 +29,7 @@ export default class World {
       this.cellPassable[j] = Array<boolean>(this.width).fill(true);
     }
 
-    this.pheremones = this.createPheremone(0, 0, width, height);
+    this.pheremones = this.createPheremoneLayers(0, 0, width, height);
   }
 
   createAnt(x: number, y: number, colony: Colony, behaviour: AntBehaviour) {
@@ -56,10 +57,28 @@ export default class World {
     const obstacle = createObstacleMesh();
     obstacle.position.set(x, OBSTACLE_HEIGHT, y);
     this.scene.add(obstacle);
+    this.obstacles.push(obstacle);
     this.cellPassable[Math.floor(y)][Math.floor(x)] = false;
   }
 
-  createPheremone(x: number, y: number, width: number, height: number) {
+  removeObstacle(x: number, y: number) {
+    const cX = Math.floor(x);
+    const cY = Math.floor(y);
+
+    const obstaclesToRemove = this.obstacles.filter(
+      (o) => cX === Math.floor(o.position.x) && cY === Math.floor(o.position.z)
+    );
+
+    if (obstaclesToRemove.length > 0) {
+      this.scene.remove(...obstaclesToRemove);
+      this.obstacles = this.obstacles.filter(
+        (o) => !obstaclesToRemove.includes(o)
+      );
+      this.cellPassable[cY][cX] = true;
+    }
+  }
+
+  createPheremoneLayers(x: number, y: number, width: number, height: number) {
     this.pheremones = new PheremoneLayers(x, y, width, height);
     this.scene.add(this.pheremones.mesh);
     return this.pheremones;
@@ -81,6 +100,13 @@ export default class World {
     // TODO - clean up any removed entities
     // remove dead ants
     // remove finished food
+  }
+
+  isInCell(x: number, y: number, object: Object3D) {
+    return (
+      Math.floor(x) === Math.floor(object.position.x) &&
+      Math.floor(y) === Math.floor(object.position.z)
+    );
   }
 
   // check if there is food in the same cell as the given point
