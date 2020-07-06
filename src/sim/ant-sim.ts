@@ -1,6 +1,6 @@
 import { Scene } from 'three';
 import { AntBehaviour } from '../behaviours/ant-behaviour';
-import { RandomBehaviour } from '../behaviours/random-behaviour';
+import { DirectedCellBehaviour } from '../behaviours/directed-cell-behaviour';
 import Pheremone from '../pheremone/pheremone';
 import {
   importMap,
@@ -16,7 +16,6 @@ import Timer from '../util/timer';
 import { AntMap } from '../world/ant-map';
 import World from '../world/world';
 import * as Settings from './settings';
-import { CellBehaviour } from '../behaviours/cell-behaviour';
 
 export default class AntSim {
   static RNG: RNG;
@@ -34,7 +33,7 @@ export default class AntSim {
     console.log(`seed=${AntSim.RNG.seed}`);
 
     // 3. Setup the ant's behaviour
-    this.antBehaviour = new CellBehaviour();
+    this.antBehaviour = new DirectedCellBehaviour();
 
     // 4. Setup the world
     this.world = this.loadWorld(importMap(), scene);

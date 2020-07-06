@@ -6,6 +6,7 @@ import Food from '../entities/food';
 import Terrain from '../entities/terrain';
 import PheremoneLayers from '../pheremone/pheremone-layers';
 import { createObstacleMesh, OBSTACLE_HEIGHT } from '../util/mesh-utils';
+import { Direction } from './direction';
 
 export default class World {
   ants: Ant[] = [];
@@ -158,6 +159,70 @@ export default class World {
       if (cX < this.width - 1) {
         if (this.cellPassable[cY + 1][cX + 1]) {
           res.push(new Vector2(cX + 1, cY + 1));
+        }
+      }
+    }
+
+    if (res.length == 0) {
+      console.log(`nowhere to go from (${cX},${cY})`);
+    }
+    return res;
+  }
+
+  getPassableAdjacentDirections(x: number, y: number): Direction[] {
+    const cX = Math.floor(x);
+    const cY = Math.floor(y);
+
+    const res: Direction[] = [];
+
+    if (cY > 0) {
+      if (cX > 0) {
+        // North West
+        if (this.cellPassable[cY - 1][cX - 1]) {
+          res.push(Direction.NORTH_WEST);
+        }
+      }
+      // North
+      if (this.cellPassable[cY - 1][cX]) {
+        res.push(Direction.NORTH);
+      }
+      // North East
+      if (cX < this.width - 1) {
+        if (this.cellPassable[cY - 1][cX + 1]) {
+          res.push(Direction.NORTH_EAST);
+        }
+      }
+    }
+
+    // West
+    if (cX > 0) {
+      if (this.cellPassable[cY][cX - 1]) {
+        res.push(Direction.WEST);
+      }
+    }
+
+    // East
+    if (cX < this.width - 1) {
+      if (this.cellPassable[cY][cX + 1]) {
+        res.push(Direction.EAST);
+      }
+    }
+
+    if (cY < this.height - 1) {
+      // South West
+      if (cX > 0) {
+        if (this.cellPassable[cY + 1][cX - 1]) {
+          res.push(Direction.SOUTH_WEST);
+        }
+      }
+      // South
+      if (this.cellPassable[cY + 1][cX]) {
+        res.push(Direction.SOUTH);
+      }
+      // South East
+      if (cX < this.width - 1) {
+        if (this.cellPassable[cY + 1][cX + 1]) {
+          res.push(Direction.SOUTH_EAST);
         }
       }
     }

@@ -1,14 +1,16 @@
-import { Mesh, Vector3, Object3D } from 'three';
-import {
-  ANT_HEIGHT,
-  createAntMesh,
-  FOOD_MATERIAL,
-  ANT_MATERIAL,
-} from '../util/mesh-utils';
-import Colony from './colony';
-import World from '../world/world';
+import { Mesh, Object3D, Vector3 } from 'three';
 import { AntBehaviour } from '../behaviours/ant-behaviour';
 import { ANT_SPEED } from '../sim/settings';
+import {
+  ANT_HEIGHT,
+  ANT_MATERIAL,
+  createAntMesh,
+  FOOD_MATERIAL,
+} from '../util/mesh-utils';
+import { Direction, directionVectors } from '../world/direction';
+import World from '../world/world';
+import Colony from './colony';
+import Food from './food';
 
 export enum AntState {
   IN_COLONY,
@@ -25,6 +27,7 @@ export default class Ant {
   state = AntState.IN_COLONY;
   hasFood = false;
   goal: Vector3 | null = null;
+  direction: Direction | null = null;
   steps = 0;
 
   constructor(
@@ -36,7 +39,8 @@ export default class Ant {
   ) {
     this.mesh = createAntMesh();
     this.mesh.position.set(x, ANT_HEIGHT, y);
-    this.mesh.rotation.y = Math.random() * Math.PI * 2;
+
+    this.setDirection(null);
   }
 
   update(delta: number) {
@@ -69,7 +73,7 @@ export default class Ant {
     }
   }
 
-  pickupFood() {
+  pickupFood(f: Food) {
     this.hasFood = true;
     (this.mesh as Mesh).material = FOOD_MATERIAL;
   }
@@ -77,5 +81,17 @@ export default class Ant {
   returnFood() {
     this.hasFood = false;
     (this.mesh as Mesh).material = ANT_MATERIAL;
+  }
+
+  setDirection(direction: Direction | null) {
+    this.direction = direction;
+
+    if (this.direction != null) {
+      this.mesh.lookAt(
+        this.mesh.position.x + directionVectors[this.direction].x,
+        this.mesh.position.y,
+        this.mesh.position.z + directionVectors[this.direction].y
+      );
+    }
   }
 }

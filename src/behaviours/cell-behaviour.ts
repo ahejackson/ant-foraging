@@ -9,7 +9,11 @@ import { ANT_CURIOSITY } from '../sim/settings';
 
 export class CellBehaviour implements AntBehaviour {
   readonly name = 'Cell';
-  readonly description = 'This behaviour causes ants to move randomly';
+  readonly description = `
+  Using this behaviour, ants construct and follow a basic gradient pattern as they search for food and return it to the colony.
+  In general this strategy isn't successful because the simplistic way pheromone is laid down in fixed increments (up to a maximum value) means that it is hard for the ants to create and follow trails.
+  In particular, groups of ants, some with food and some without, can get stuck in their own little back and forth where they are constantly topping up the levels of each other's pheromone trails.
+  The initial exploratory stage is also very slow as the ants are doing random walks.`;
 
   goalReached(ant: Ant, world: World) {
     switch (ant.state) {
@@ -35,7 +39,7 @@ export class CellBehaviour implements AntBehaviour {
 
     if (foodInCell.length > 0) {
       // If so, pickup the food and change the state
-      ant.pickupFood();
+      ant.pickupFood(AntSim.RNG.pick(foodInCell));
       ant.state = AntState.RETURNING_TO_COLONY;
     } else {
       // If not, lay down home pheremone
