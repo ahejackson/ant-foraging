@@ -10,8 +10,8 @@ export class RandomBehaviour implements AntBehaviour {
   readonly description = 'This behaviour causes ants to move randomly';
 
   goalReached(ant: Ant, world: World) {
-    // Add home pheremone to the path
-    world.pheremones.addPheremone(
+    // Add home pheromone to the path
+    world.pheromones.addPheromone(
       'HOME',
       ant.mesh.position.x,
       ant.mesh.position.z

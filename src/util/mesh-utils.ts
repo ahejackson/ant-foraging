@@ -90,7 +90,7 @@ export function createObstacleMesh() {
 export const PHEREMONE_CELL_HEIGHT = 0.01;
 export const PHEREMONE_CELL_GEOMETRY = new PlaneBufferGeometry(1, 1);
 
-export function createPheremoneGridMesh(
+export function createPheromoneGridMesh(
   width: number,
   height: number
 ): [Mesh[][], Group] {
@@ -121,7 +121,7 @@ export const HOME_PHEREMONE_COLORS = [
   0xffffcc,
 ];
 
-export function createHomePheremoneMaterials() {
+export function createHomePheromoneMaterials() {
   return HOME_PHEREMONE_COLORS.map(
     (color) => new MeshBasicMaterial({ color, side: DoubleSide })
   );
@@ -139,7 +139,7 @@ export const FOOD_PHEREMONE_COLORS = [
   0xf7fcf0,
 ];
 
-export function createFoodPheremoneMaterials() {
+export function createFoodPheromoneMaterials() {
   return FOOD_PHEREMONE_COLORS.map(
     (color) => new MeshBasicMaterial({ color, side: DoubleSide })
   );

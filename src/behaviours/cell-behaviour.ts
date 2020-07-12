@@ -4,7 +4,7 @@ import AntSim from '../sim/ant-sim';
 import { ANT_HEIGHT } from '../util/mesh-utils';
 import World from '../world/world';
 import { AntBehaviour } from './ant-behaviour';
-import { FOOD_PHEREMONE, HOME_PHEREMONE } from '../pheremone/pheremone';
+import { FOOD_PHEREMONE, HOME_PHEREMONE } from '../pheromone/pheromone';
 import { ANT_CURIOSITY } from '../sim/settings';
 
 export class CellBehaviour implements AntBehaviour {
@@ -47,8 +47,8 @@ The initial exploratory stage is also very slow as the ants are doing random wal
       ant.pickupFood(AntSim.RNG.pick(foodInCell));
       ant.state = AntState.RETURNING_TO_COLONY;
     } else {
-      // If not, lay down home pheremone
-      world.pheremones.addPheremone(
+      // If not, lay down home pheromone
+      world.pheromones.addPheromone(
         HOME_PHEREMONE,
         ant.mesh.position.x,
         ant.mesh.position.z
@@ -65,9 +65,9 @@ The initial exploratory stage is also very slow as the ants are doing random wal
       }
       ant.state = AntState.IN_COLONY;
     } else {
-      // 1. if not, and the ant is carrying food (which it should be) lay down food pheremone
+      // 1. if not, and the ant is carrying food (which it should be) lay down food pheromone
       if (ant.hasFood) {
-        world.pheremones.addPheremone(
+        world.pheromones.addPheromone(
           FOOD_PHEREMONE,
           ant.mesh.position.x,
           ant.mesh.position.z
@@ -126,22 +126,22 @@ The initial exploratory stage is also very slow as the ants are doing random wal
       return ant.goal;
     }
 
-    // 6. if not, look at how much food pheremone is in the surrounding food cells
+    // 6. if not, look at how much food pheromone is in the surrounding food cells
     let bestLocations: Vector2[] = [];
-    let pheremoneLevel = 0;
-    let mostPheremone = 0;
+    let pheromoneLevel = 0;
+    let mostPheromone = 0;
 
     options.forEach((cell) => {
-      pheremoneLevel = world.pheremones.pheremoneValueAt(
+      pheromoneLevel = world.pheromones.pheromoneValueAt(
         FOOD_PHEREMONE,
         cell.x,
         cell.y
       );
 
-      if (pheremoneLevel > mostPheremone) {
-        mostPheremone = pheremoneLevel;
+      if (pheromoneLevel > mostPheromone) {
+        mostPheromone = pheromoneLevel;
         bestLocations = [cell];
-      } else if (pheremoneLevel === mostPheremone) {
+      } else if (pheromoneLevel === mostPheromone) {
         bestLocations.push(cell);
       }
     });
@@ -168,22 +168,22 @@ The initial exploratory stage is also very slow as the ants are doing random wal
       return null;
     }
 
-    // 3. if not, look at how much home pheremone is in the surrounding food cells
+    // 3. if not, look at how much home pheromone is in the surrounding food cells
     let bestLocations: Vector2[] = [];
-    let pheremoneLevel = 0;
-    let mostPheremone = 0;
+    let pheromoneLevel = 0;
+    let mostPheromone = 0;
 
     options.forEach((cell) => {
-      pheremoneLevel = world.pheremones.pheremoneValueAt(
+      pheromoneLevel = world.pheromones.pheromoneValueAt(
         HOME_PHEREMONE,
         cell.x,
         cell.y
       );
 
-      if (pheremoneLevel > mostPheremone) {
-        mostPheremone = pheremoneLevel;
+      if (pheromoneLevel > mostPheromone) {
+        mostPheromone = pheromoneLevel;
         bestLocations = [cell];
-      } else if (pheremoneLevel === mostPheremone) {
+      } else if (pheromoneLevel === mostPheromone) {
         bestLocations.push(cell);
       }
     });

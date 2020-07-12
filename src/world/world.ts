@@ -4,7 +4,7 @@ import Ant from '../entities/ant';
 import Colony from '../entities/colony';
 import Food from '../entities/food';
 import Terrain from '../entities/terrain';
-import PheremoneLayers from '../pheremone/pheremone-layers';
+import PheromoneLayers from '../pheromone/pheromone-layers';
 import { createObstacleMesh, OBSTACLE_HEIGHT } from '../util/mesh-utils';
 import { Direction } from './direction';
 
@@ -15,7 +15,7 @@ export default class World {
   terrain: Terrain[] = [];
   obstacles: Object3D[] = [];
 
-  pheremones: PheremoneLayers;
+  pheromones: PheromoneLayers;
   cellPassable: boolean[][];
 
   constructor(
@@ -29,7 +29,7 @@ export default class World {
       this.cellPassable[j] = Array<boolean>(this.width).fill(true);
     }
 
-    this.pheremones = this.createPheremoneLayers(0, 0, width, height);
+    this.pheromones = this.createPheromoneLayers(0, 0, width, height);
   }
 
   createAnt(x: number, y: number, colony: Colony, behaviour: AntBehaviour) {
@@ -78,10 +78,10 @@ export default class World {
     }
   }
 
-  createPheremoneLayers(x: number, y: number, width: number, height: number) {
-    this.pheremones = new PheremoneLayers(x, y, width, height);
-    this.scene.add(this.pheremones.mesh);
-    return this.pheremones;
+  createPheromoneLayers(x: number, y: number, width: number, height: number) {
+    this.pheromones = new PheromoneLayers(x, y, width, height);
+    this.scene.add(this.pheromones.mesh);
+    return this.pheromones;
   }
 
   createTerrain(x: number, y: number, width: number, height: number) {
@@ -92,7 +92,7 @@ export default class World {
   }
 
   update(delta: number) {
-    this.pheremones.update(delta);
+    this.pheromones.update(delta);
     this.colonies.forEach((c) => c.update(delta));
     this.ants.forEach((a) => a.update(delta));
     this.food.forEach((f) => f.update(delta));

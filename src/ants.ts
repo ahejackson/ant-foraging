@@ -24,7 +24,7 @@ const pickHelper = new PickHelper(canvas);
 let running = true;
 let stepOnce = false;
 let previousTime = 0;
-let displayPheremone: null | 'HOME' | 'FOOD' | 'STRONGEST' = null;
+let displayPheromone: null | 'HOME' | 'FOOD' | 'STRONGEST' = null;
 
 function init() {
   // TODO - not sure how to position camera for variable sized map
@@ -52,7 +52,7 @@ function init() {
           console.log('stepping once');
           break;
         case 'KeyP':
-          cycleDisplayPheremone();
+          cycleDisplayPheromone();
           break;
         case 'KeyE':
           saveMap(sim.world);
@@ -89,11 +89,11 @@ function start() {
   requestAnimationFrame(render);
 }
 
-// Temporary function to add pheremone to a cell
+// Temporary function to add pheromone to a cell
 function pickCell() {
   let cell = pickHelper.pick(
     pickHelper.mouse,
-    sim.world.pheremones.mesh,
+    sim.world.pheromones.mesh,
     camera
   );
 
@@ -110,26 +110,26 @@ function pickCell() {
   }
 }
 
-function cycleDisplayPheremone() {
-  switch (displayPheremone) {
+function cycleDisplayPheromone() {
+  switch (displayPheromone) {
     case null:
-      displayPheremone = 'STRONGEST';
-      console.log(`Showing the strongest pheremone`);
+      displayPheromone = 'STRONGEST';
+      console.log(`Showing the strongest pheromone`);
       break;
     case 'STRONGEST':
-      displayPheremone = 'HOME';
-      console.log(`Showing home pheremone`);
+      displayPheromone = 'HOME';
+      console.log(`Showing home pheromone`);
       break;
     case 'HOME':
-      displayPheremone = 'FOOD';
-      console.log(`Showing food pheremone`);
+      displayPheromone = 'FOOD';
+      console.log(`Showing food pheromone`);
       break;
     case 'FOOD':
-      displayPheremone = null;
-      console.log(`Not showing any pheremone`);
+      displayPheromone = null;
+      console.log(`Not showing any pheromone`);
       break;
   }
-  sim.world.pheremones.displayPheremone = displayPheremone;
+  sim.world.pheromones.displayPheromone = displayPheromone;
 }
 
 // Keep the display responsive

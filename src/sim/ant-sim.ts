@@ -1,17 +1,16 @@
 import { Scene } from 'three';
 import { AntBehaviour } from '../behaviours/ant-behaviour';
-import { DirectedCellBehaviour } from '../behaviours/directed-cell-behaviour';
-import Pheremone from '../pheremone/pheremone';
+import { VariablePheromoneIncrementingBehaviour } from '../behaviours/variable-pheromone-incrementing-behaviour';
+import Pheromone from '../pheromone/pheromone';
 import { loadDefaultMap, loadMap } from '../util/map-utils';
 import {
-  createFoodPheremoneMaterials,
-  createHomePheremoneMaterials,
+  createFoodPheromoneMaterials,
+  createHomePheromoneMaterials,
 } from '../util/mesh-utils';
 import RNG from '../util/random';
 import Timer from '../util/timer';
 import World from '../world/world';
 import * as Settings from './settings';
-import { VariablePheremoneIncrementingBehaviour } from '../behaviours/variable-pheremone-incrementing-behaviour';
 
 export default class AntSim {
   static RNG: RNG;
@@ -29,30 +28,30 @@ export default class AntSim {
     console.log(`seed=${AntSim.RNG.seed}`);
 
     // 3. Setup the ant's behaviour
-    this.antBehaviour = new VariablePheremoneIncrementingBehaviour();
+    this.antBehaviour = new VariablePheromoneIncrementingBehaviour();
 
     // 4. Setup the world
     const map = loadDefaultMap();
     this.world = new World(map.width, map.height, scene);
     loadMap(map, this.world);
 
-    // 6. Setup the pheremones
-    this.world.pheremones.addLayer(
-      new Pheremone(
+    // 6. Setup the pheromones
+    this.world.pheromones.addLayer(
+      new Pheromone(
         'HOME',
         Settings.HOME_PHEREMONE_MAX,
         Settings.HOME_PHEREMONE_INCREMENT,
         Settings.HOME_PHEREMONE_DECAY_INTERVAL,
-        createHomePheremoneMaterials()
+        createHomePheromoneMaterials()
       )
     );
-    this.world.pheremones.addLayer(
-      new Pheremone(
+    this.world.pheromones.addLayer(
+      new Pheromone(
         'FOOD',
         Settings.FOOD_PHEREMONE_MAX,
         Settings.FOOD_PHEREMONE_INCREMENT,
         Settings.FOOD_PHEREMONE_DECAY_INTERVAL,
-        createFoodPheremoneMaterials()
+        createFoodPheromoneMaterials()
       )
     );
 

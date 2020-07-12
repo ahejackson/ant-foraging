@@ -1,17 +1,17 @@
 import { Group, Mesh } from 'three';
-import { createPheremoneGridMesh, TERRAIN_MATERIAL } from '../util/mesh-utils';
-import Pheremone from './pheremone';
+import { createPheromoneGridMesh, TERRAIN_MATERIAL } from '../util/mesh-utils';
+import Pheromone from './pheromone';
 
-export default class PheremoneLayers {
+export default class PheromoneLayers {
   cells: Mesh[][];
   mesh: Group;
 
   // the cells represent the geometry
-  types: Map<string, Pheremone> = new Map();
+  types: Map<string, Pheromone> = new Map();
   values: Map<string, number[][]> = new Map();
   freshness: Map<string, number[][]> = new Map();
 
-  displayPheremone: string | null = null;
+  displayPheromone: string | null = null;
 
   constructor(
     readonly x: number,
@@ -19,13 +19,13 @@ export default class PheremoneLayers {
     readonly width: number,
     readonly height: number
   ) {
-    [this.cells, this.mesh] = createPheremoneGridMesh(width, height);
+    [this.cells, this.mesh] = createPheromoneGridMesh(width, height);
   }
 
-  addLayer(pheremone: Pheremone) {
-    this.types.set(pheremone.name, pheremone);
+  addLayer(pheromone: Pheromone) {
+    this.types.set(pheromone.name, pheromone);
 
-    // create and fill the value and freshness of this pheremone layer
+    // create and fill the value and freshness of this pheromone layer
     const value = Array<number[]>(this.height);
     const freshness = Array<number[]>(this.height);
 
@@ -34,19 +34,19 @@ export default class PheremoneLayers {
       freshness[j] = Array<number>(this.width).fill(0);
     }
 
-    this.values.set(pheremone.name, value);
-    this.freshness.set(pheremone.name, freshness);
+    this.values.set(pheromone.name, value);
+    this.freshness.set(pheromone.name, freshness);
   }
 
-  pheremoneValueAt(name: string, x: number, y: number) {
+  pheromoneValueAt(name: string, x: number, y: number) {
     return this.values.get(name)![Math.floor(y)][Math.floor(x)];
   }
 
-  pheremoneFreshnessAt(name: string, x: number, y: number) {
+  pheromoneFreshnessAt(name: string, x: number, y: number) {
     return this.freshness.get(name)![Math.floor(y)][Math.floor(x)];
   }
 
-  addPheremone(name: string, x: number, y: number, quantity?: number) {
+  addPheromone(name: string, x: number, y: number, quantity?: number) {
     const cX = Math.floor(x);
     const cY = Math.floor(y);
 
@@ -64,39 +64,39 @@ export default class PheremoneLayers {
   update(delta: number) {
     for (let cY = 0; cY < this.height; cY++) {
       for (let cX = 0; cX < this.width; cX++) {
-        for (const pheremone of this.types.keys()) {
-          this.values.get(pheremone)![cY][cX] = Math.max(
-            this.values.get(pheremone)![cY][cX] - 1,
+        for (const pheromone of this.types.keys()) {
+          this.values.get(pheromone)![cY][cX] = Math.max(
+            this.values.get(pheromone)![cY][cX] - 1,
             0
           );
-          this.freshness.get(pheremone)![cY][cX] = 0;
+          this.freshness.get(pheromone)![cY][cX] = 0;
         }
 
         // set material
         // first reset to blank
         this.cells[cY][cX].material = TERRAIN_MATERIAL;
-        if (this.displayPheremone === 'STRONGEST') {
-          let strongestPheremone: Pheremone | null = null;
+        if (this.displayPheromone === 'STRONGEST') {
+          let strongestPheromone: Pheromone | null = null;
           let strongestValue = 0;
 
-          for (let [pheremoneName, pheremone] of this.types.entries()) {
-            let value = this.values.get(pheremoneName)![cY][cX];
+          for (let [pheromoneName, pheromone] of this.types.entries()) {
+            let value = this.values.get(pheromoneName)![cY][cX];
             if (value > strongestValue) {
               strongestValue = value;
-              strongestPheremone = pheremone;
+              strongestPheromone = pheromone;
             }
           }
 
-          if (strongestPheremone != null) {
-            this.cells[cY][cX].material = strongestPheremone.getMaterial(
+          if (strongestPheromone != null) {
+            this.cells[cY][cX].material = strongestPheromone.getMaterial(
               strongestValue
             );
           }
-        } else if (this.displayPheremone != null) {
-          let value = this.values.get(this.displayPheremone)![cY][cX];
+        } else if (this.displayPheromone != null) {
+          let value = this.values.get(this.displayPheromone)![cY][cX];
           if (value > 0) {
             this.cells[cY][cX].material = this.types
-              .get(this.displayPheremone)!
+              .get(this.displayPheromone)!
               .getMaterial(value);
           }
         }

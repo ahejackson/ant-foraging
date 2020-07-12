@@ -1,6 +1,6 @@
 import { Vector3 } from 'three';
 import Ant, { AntState } from '../entities/ant';
-import { FOOD_PHEREMONE, HOME_PHEREMONE } from '../pheremone/pheremone';
+import { FOOD_PHEREMONE, HOME_PHEREMONE } from '../pheromone/pheromone';
 import AntSim from '../sim/ant-sim';
 import { ANT_CURIOSITY } from '../sim/settings';
 import { ANT_HEIGHT } from '../util/mesh-utils';
@@ -12,10 +12,10 @@ import {
 import World from '../world/world';
 import { AntBehaviour } from './ant-behaviour';
 
-export class VariablePheremoneIncrementingBehaviour implements AntBehaviour {
+export class VariablePheromoneIncrementingBehaviour implements AntBehaviour {
   readonly name = 'Variable Incrementing';
   readonly description = `
-This behaviour is another relatively small change to the directed cell behaviour, incrementing the amount of pheremone in a cell by a variable rather than a fixed amount to help create better gradients.
+This behaviour is another relatively small change to the directed cell behaviour, incrementing the amount of pheromone in a cell by a variable rather than a fixed amount to help create better gradients.
 
 It is possible for the ants to forage efficiently with this behaviour, but it requires ant death to prevent the formation of closed loops.`;
 
@@ -45,8 +45,8 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
   }
 
   foragingGoalReached(ant: Ant, world: World) {
-    // lay down home pheremone
-    world.pheremones.addPheremone(
+    // lay down home pheromone
+    world.pheromones.addPheromone(
       HOME_PHEREMONE,
       ant.mesh.position.x,
       ant.mesh.position.z
@@ -67,9 +67,9 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
   }
 
   returningGoalReached(ant: Ant, world: World) {
-    // if the ant is carrying food (which it should be) lay down food pheremone
+    // if the ant is carrying food (which it should be) lay down food pheromone
     if (ant.hasFood) {
-      world.pheremones.addPheremone(
+      world.pheromones.addPheromone(
         FOOD_PHEREMONE,
         ant.mesh.position.x,
         ant.mesh.position.z
@@ -87,12 +87,12 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
     }
   }
 
-  // calculate how much home pheremone to add to a cell
-  calculateHomePheremoneIncrement(ant: Ant, world: World) {
-    const homePheremone = world.pheremones.types.get(HOME_PHEREMONE)!;
+  // calculate how much home pheromone to add to a cell
+  calculateHomePheromoneIncrement(ant: Ant, world: World) {
+    const homePheromone = world.pheromones.types.get(HOME_PHEREMONE)!;
     const antX = ant.mesh.position.x;
     const antY = ant.mesh.position.z;
-    const currentPheremone = world.pheremones.pheremoneValueAt(
+    const currentPheromone = world.pheromones.pheromoneValueAt(
       HOME_PHEREMONE,
       antX,
       antY
@@ -100,28 +100,28 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
 
     // check if the ant is in its home colony
     if (ant.isHome()) {
-      // if so the ant will max the home pheremone in this cell
-      return homePheremone.max - currentPheremone;
+      // if so the ant will max the home pheromone in this cell
+      return homePheromone.max - currentPheromone;
     }
 
-    let maxPheremone = 0;
-    // otherwise look how much pheremone is in surrounding cells
+    let maxPheromone = 0;
+    // otherwise look how much pheromone is in surrounding cells
     world.getAdjacentCells(antX, antY).forEach((cell) => {
-      maxPheremone = Math.max(
-        maxPheremone,
-        world.pheremones.pheremoneValueAt(HOME_PHEREMONE, cell.x, cell.y)
+      maxPheromone = Math.max(
+        maxPheromone,
+        world.pheromones.pheromoneValueAt(HOME_PHEREMONE, cell.x, cell.y)
       );
     });
 
-    return Math.max(0, maxPheremone - currentPheremone - 2);
+    return Math.max(0, maxPheromone - currentPheromone - 2);
   }
 
-  // calculate how much food pheremone to add to a cell
-  calculateFoodPheremoneIncrement(ant: Ant, world: World) {
-    const foodPheremone = world.pheremones.types.get(FOOD_PHEREMONE)!;
+  // calculate how much food pheromone to add to a cell
+  calculateFoodPheromoneIncrement(ant: Ant, world: World) {
+    const foodPheromone = world.pheromones.types.get(FOOD_PHEREMONE)!;
     const antX = ant.mesh.position.x;
     const antY = ant.mesh.position.z;
-    const currentPheremone = world.pheremones.pheremoneValueAt(
+    const currentPheromone = world.pheromones.pheromoneValueAt(
       FOOD_PHEREMONE,
       antX,
       antY
@@ -129,20 +129,20 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
 
     // check if the ant is at some good
     if (world.foodInCell(antX, antY).length > 0) {
-      // if so the ant will max the home pheremone in this cell
-      return foodPheremone.max - currentPheremone;
+      // if so the ant will max the home pheromone in this cell
+      return foodPheromone.max - currentPheromone;
     }
 
-    let maxPheremone = 0;
-    // otherwise look how much pheremone is in surrounding cells
+    let maxPheromone = 0;
+    // otherwise look how much pheromone is in surrounding cells
     world.getAdjacentCells(antX, antY).forEach((cell) => {
-      maxPheremone = Math.max(
-        maxPheremone,
-        world.pheremones.pheremoneValueAt(FOOD_PHEREMONE, cell.x, cell.y)
+      maxPheromone = Math.max(
+        maxPheromone,
+        world.pheromones.pheromoneValueAt(FOOD_PHEREMONE, cell.x, cell.y)
       );
     });
 
-    return Math.max(0, maxPheremone - currentPheremone - 2);
+    return Math.max(0, maxPheromone - currentPheromone - 2);
   }
 
   nextAction(ant: Ant, world: World): void {
@@ -194,7 +194,7 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
       return this.moveDirection(ant, AntSim.RNG.pick(options));
     }
 
-    // 6. if not, look at how much food pheremone is in the surrounding food cells,
+    // 6. if not, look at how much food pheromone is in the surrounding food cells,
     // first looking at the forward directions
     // unless no forward options are possible, in which case consider the other directions
     let directionOptions =
@@ -209,20 +209,20 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
     }
 
     let bestDirections: Direction[] = [];
-    let pheremoneLevel = 0;
-    let mostPheremone = 0;
+    let pheromoneLevel = 0;
+    let mostPheromone = 0;
 
     directionOptions.forEach((d) => {
-      pheremoneLevel = world.pheremones.pheremoneValueAt(
+      pheromoneLevel = world.pheromones.pheromoneValueAt(
         FOOD_PHEREMONE,
         antX + directionVectors[d].x,
         antY + directionVectors[d].y
       );
 
-      if (pheremoneLevel > mostPheremone) {
-        mostPheremone = pheremoneLevel;
+      if (pheromoneLevel > mostPheromone) {
+        mostPheromone = pheromoneLevel;
         bestDirections = [d];
-      } else if (pheremoneLevel === mostPheremone) {
+      } else if (pheromoneLevel === mostPheromone) {
         bestDirections.push(d);
       }
     });
@@ -267,7 +267,7 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
       return this.moveDirection(ant, AntSim.RNG.pick(options));
     }
 
-    // 6. if not, look at how much home pheremone is in the surrounding cells,
+    // 6. if not, look at how much home pheromone is in the surrounding cells,
     // first looking at the forward directions
     // unless no forward options are possible, in which case consider the other directions
     let directionOptions =
@@ -282,20 +282,20 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
     }
 
     let bestDirections: Direction[] = [];
-    let pheremoneLevel = 0;
-    let mostPheremone = 0;
+    let pheromoneLevel = 0;
+    let mostPheromone = 0;
 
     directionOptions.forEach((d) => {
-      pheremoneLevel = world.pheremones.pheremoneValueAt(
+      pheromoneLevel = world.pheromones.pheromoneValueAt(
         HOME_PHEREMONE,
         antX + directionVectors[d].x,
         antY + directionVectors[d].y
       );
 
-      if (pheremoneLevel > mostPheremone) {
-        mostPheremone = pheremoneLevel;
+      if (pheromoneLevel > mostPheromone) {
+        mostPheromone = pheromoneLevel;
         bestDirections = [d];
-      } else if (pheremoneLevel === mostPheremone) {
+      } else if (pheromoneLevel === mostPheromone) {
         bestDirections.push(d);
       }
     });

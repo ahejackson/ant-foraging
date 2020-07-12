@@ -1,6 +1,6 @@
 import { Vector3 } from 'three';
 import Ant, { AntState } from '../entities/ant';
-import { FOOD_PHEREMONE, HOME_PHEREMONE } from '../pheremone/pheremone';
+import { FOOD_PHEREMONE, HOME_PHEREMONE } from '../pheromone/pheromone';
 import AntSim from '../sim/ant-sim';
 import { ANT_CURIOSITY } from '../sim/settings';
 import { ANT_HEIGHT } from '../util/mesh-utils';
@@ -59,8 +59,8 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
       ant.setDirection(null);
       ant.state = AntState.RETURNING_TO_COLONY;
     } else {
-      // If not, lay down home pheremone
-      world.pheremones.addPheremone(
+      // If not, lay down home pheromone
+      world.pheromones.addPheromone(
         HOME_PHEREMONE,
         ant.mesh.position.x,
         ant.mesh.position.z
@@ -78,9 +78,9 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
       ant.setDirection(null);
       ant.state = AntState.IN_COLONY;
     } else {
-      // 1. if not, and the ant is carrying food (which it should be) lay down food pheremone
+      // 1. if not, and the ant is carrying food (which it should be) lay down food pheromone
       if (ant.hasFood) {
-        world.pheremones.addPheremone(
+        world.pheromones.addPheromone(
           FOOD_PHEREMONE,
           ant.mesh.position.x,
           ant.mesh.position.z
@@ -138,7 +138,7 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
       return this.moveDirection(ant, AntSim.RNG.pick(options));
     }
 
-    // 6. if not, look at how much food pheremone is in the surrounding food cells,
+    // 6. if not, look at how much food pheromone is in the surrounding food cells,
     // first looking at the forward directions
     // unless no forward options are possible, in which case consider the other directions
     let directionOptions =
@@ -153,20 +153,20 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
     }
 
     let bestDirections: Direction[] = [];
-    let pheremoneLevel = 0;
-    let mostPheremone = 0;
+    let pheromoneLevel = 0;
+    let mostPheromone = 0;
 
     directionOptions.forEach((d) => {
-      pheremoneLevel = world.pheremones.pheremoneValueAt(
+      pheromoneLevel = world.pheromones.pheromoneValueAt(
         FOOD_PHEREMONE,
         antX + directionVectors[d].x,
         antY + directionVectors[d].y
       );
 
-      if (pheremoneLevel > mostPheremone) {
-        mostPheremone = pheremoneLevel;
+      if (pheromoneLevel > mostPheromone) {
+        mostPheromone = pheromoneLevel;
         bestDirections = [d];
-      } else if (pheremoneLevel === mostPheremone) {
+      } else if (pheromoneLevel === mostPheromone) {
         bestDirections.push(d);
       }
     });
@@ -211,7 +211,7 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
       return this.moveDirection(ant, AntSim.RNG.pick(options));
     }
 
-    // 6. if not, look at how much home pheremone is in the surrounding cells,
+    // 6. if not, look at how much home pheromone is in the surrounding cells,
     // first looking at the forward directions
     // unless no forward options are possible, in which case consider the other directions
     let directionOptions =
@@ -226,20 +226,20 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
     }
 
     let bestDirections: Direction[] = [];
-    let pheremoneLevel = 0;
-    let mostPheremone = 0;
+    let pheromoneLevel = 0;
+    let mostPheromone = 0;
 
     directionOptions.forEach((d) => {
-      pheremoneLevel = world.pheremones.pheremoneValueAt(
+      pheromoneLevel = world.pheromones.pheromoneValueAt(
         HOME_PHEREMONE,
         antX + directionVectors[d].x,
         antY + directionVectors[d].y
       );
 
-      if (pheremoneLevel > mostPheremone) {
-        mostPheremone = pheremoneLevel;
+      if (pheromoneLevel > mostPheromone) {
+        mostPheromone = pheromoneLevel;
         bestDirections = [d];
-      } else if (pheremoneLevel === mostPheremone) {
+      } else if (pheromoneLevel === mostPheromone) {
         bestDirections.push(d);
       }
     });
