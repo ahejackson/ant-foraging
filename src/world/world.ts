@@ -195,6 +195,56 @@ export default class World {
     return res;
   }
 
+  getAdjacentCells(x: number, y: number) {
+    const cX = Math.floor(x);
+    const cY = Math.floor(y);
+
+    const res: Vector2[] = [];
+
+    if (cY > 0) {
+      if (cX > 0) {
+        // North West
+        res.push(new Vector2(cX - 1, cY - 1));
+      }
+      // North
+      res.push(new Vector2(cX, cY - 1));
+
+      // North East
+      if (cX < this.width - 1) {
+        res.push(new Vector2(cX + 1, cY - 1));
+      }
+    }
+
+    // West
+    if (cX > 0) {
+      res.push(new Vector2(cX - 1, cY));
+    }
+
+    // East
+    if (cX < this.width - 1) {
+      res.push(new Vector2(cX + 1, cY));
+    }
+
+    if (cY < this.height - 1) {
+      // South West
+      if (cX > 0) {
+        res.push(new Vector2(cX - 1, cY + 1));
+      }
+      // South
+      res.push(new Vector2(cX, cY + 1));
+
+      // South East
+      if (cX < this.width - 1) {
+        res.push(new Vector2(cX + 1, cY + 1));
+      }
+    }
+
+    if (res.length == 0) {
+      console.log(`nothing is around (${cX},${cY})`);
+    }
+    return res;
+  }
+
   getPassableAdjacentDirections(x: number, y: number): Direction[] {
     const cX = Math.floor(x);
     const cY = Math.floor(y);

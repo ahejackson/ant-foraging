@@ -10,10 +10,15 @@ import { ANT_CURIOSITY } from '../sim/settings';
 export class CellBehaviour implements AntBehaviour {
   readonly name = 'Cell';
   readonly description = `
-  Using this behaviour, ants construct and follow a basic gradient pattern as they search for food and return it to the colony.
-  In general this strategy isn't successful because the simplistic way pheromone is laid down in fixed increments (up to a maximum value) means that it is hard for the ants to create and follow trails.
-  In particular, groups of ants, some with food and some without, can get stuck in their own little back and forth where they are constantly topping up the levels of each other's pheromone trails.
-  The initial exploratory stage is also very slow as the ants are doing random walks.`;
+ Using this behaviour, ants construct and follow a basic gradient pattern as they search for food and return it to the colony.
+
+Whenever and ant reaches its goal location it will lay down pheromone - either a "HOME" pheromone if it doesn't have food, or a "FOOD" pheromone if it does. The ant lays down pheromone in a fixed quantity (up to a maximum value in each cell).
+
+ In general this strategy isn't successful because the simplistic way pheromone is laid down means that it is hard for the ants to create and follow trails.
+
+In particular, groups of ants, some with food and some without, can get stuck in their own little back and forth where they are constantly topping up the levels of each other's pheromone trails.
+
+The initial exploratory stage is also very slow as the ants are doing random walks.`;
 
   goalReached(ant: Ant, world: World) {
     switch (ant.state) {
@@ -53,11 +58,7 @@ export class CellBehaviour implements AntBehaviour {
 
   returningGoalReached(ant: Ant, world: World) {
     // Check if the ant has returned to its home colony
-    if (
-      Math.floor(ant.mesh.position.x) ===
-        Math.floor(ant.colony.mesh.position.x) &&
-      Math.floor(ant.mesh.position.z) === Math.floor(ant.colony.mesh.position.y)
-    ) {
+    if (ant.isHome()) {
       // if so, return any food it is carrying and change the state
       if (ant.hasFood) {
         ant.returnFood();

@@ -11,6 +11,7 @@ import RNG from '../util/random';
 import Timer from '../util/timer';
 import World from '../world/world';
 import * as Settings from './settings';
+import { VariablePheremoneIncrementingBehaviour } from '../behaviours/variable-pheremone-incrementing-behaviour';
 
 export default class AntSim {
   static RNG: RNG;
@@ -28,7 +29,7 @@ export default class AntSim {
     console.log(`seed=${AntSim.RNG.seed}`);
 
     // 3. Setup the ant's behaviour
-    this.antBehaviour = new DirectedCellBehaviour();
+    this.antBehaviour = new VariablePheremoneIncrementingBehaviour();
 
     // 4. Setup the world
     const map = loadDefaultMap();

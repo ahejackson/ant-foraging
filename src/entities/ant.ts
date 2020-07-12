@@ -73,6 +73,15 @@ export default class Ant {
     }
   }
 
+  isHome() {
+    return (
+      Math.floor(this.mesh.position.x) ===
+        Math.floor(this.colony.mesh.position.x) &&
+      Math.floor(this.mesh.position.z) ===
+        Math.floor(this.colony.mesh.position.z)
+    );
+  }
+
   pickupFood(f: Food) {
     this.hasFood = true;
     (this.mesh as Mesh).material = FOOD_MATERIAL;

@@ -12,14 +12,12 @@ import {
 import World from '../world/world';
 import { AntBehaviour } from './ant-behaviour';
 
-export class DirectedCellBehaviour implements AntBehaviour {
-  readonly name = 'Directed';
+export class VariablePheremoneIncrementingBehaviour implements AntBehaviour {
+  readonly name = 'Variable Incrementing';
   readonly description = `
-This behaviour is a relatively small change to cell behaviour that delivers much better results. This behaviour biases the ant's movement in favour of the three cells in front of its current direction (forward, forward-left and forward-right). 
+This behaviour is another relatively small change to the directed cell behaviour, incrementing the amount of pheremone in a cell by a variable rather than a fixed amount to help create better gradients.
 
-This change improves the exploratory stage because the ants are less likely to double back on themselves, so they explore the map faster and are therefore more likely to come across food.
-
-It also removes the problem of the ants getting stuck in very tight back-and-forths and does allow for trail formation back to the colony, but these are unstable - the ants can form self contained loops where ants with food and ants without are following the tails each other is laying down, like the snake eating its own tail. In variations of the model without ant death, these loops can last indefinitely.`;
+It is possible for the ants to forage efficiently with this behaviour, but it requires ant death to prevent the formation of closed loops.`;
 
   goalReached(ant: Ant, world: World) {
     switch (ant.state) {
@@ -47,7 +45,14 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
   }
 
   foragingGoalReached(ant: Ant, world: World) {
-    // 1. Check if the current cell contains food
+    // lay down home pheremone
+    world.pheremones.addPheremone(
+      HOME_PHEREMONE,
+      ant.mesh.position.x,
+      ant.mesh.position.z
+    );
+
+    // Check if the current cell contains food
     const foodInCell = world.foodInCell(
       ant.mesh.position.x,
       ant.mesh.position.z
@@ -58,17 +63,19 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
       ant.pickupFood(AntSim.RNG.pick(foodInCell));
       ant.setDirection(null);
       ant.state = AntState.RETURNING_TO_COLONY;
-    } else {
-      // If not, lay down home pheremone
-      world.pheremones.addPheremone(
-        HOME_PHEREMONE,
-        ant.mesh.position.x,
-        ant.mesh.position.z
-      );
     }
   }
 
   returningGoalReached(ant: Ant, world: World) {
+    // if the ant is carrying food (which it should be) lay down food pheremone
+    if (ant.hasFood) {
+      world.pheremones.addPheremone(
+        FOOD_PHEREMONE,
+        ant.mesh.position.x,
+        ant.mesh.position.z
+      );
+    }
+
     // Check if the ant has returned to its home colony
     if (ant.isHome()) {
       // if so, return any food it is carrying and change the state
@@ -77,16 +84,65 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
       }
       ant.setDirection(null);
       ant.state = AntState.IN_COLONY;
-    } else {
-      // 1. if not, and the ant is carrying food (which it should be) lay down food pheremone
-      if (ant.hasFood) {
-        world.pheremones.addPheremone(
-          FOOD_PHEREMONE,
-          ant.mesh.position.x,
-          ant.mesh.position.z
-        );
-      }
     }
+  }
+
+  // calculate how much home pheremone to add to a cell
+  calculateHomePheremoneIncrement(ant: Ant, world: World) {
+    const homePheremone = world.pheremones.types.get(HOME_PHEREMONE)!;
+    const antX = ant.mesh.position.x;
+    const antY = ant.mesh.position.z;
+    const currentPheremone = world.pheremones.pheremoneValueAt(
+      HOME_PHEREMONE,
+      antX,
+      antY
+    );
+
+    // check if the ant is in its home colony
+    if (ant.isHome()) {
+      // if so the ant will max the home pheremone in this cell
+      return homePheremone.max - currentPheremone;
+    }
+
+    let maxPheremone = 0;
+    // otherwise look how much pheremone is in surrounding cells
+    world.getAdjacentCells(antX, antY).forEach((cell) => {
+      maxPheremone = Math.max(
+        maxPheremone,
+        world.pheremones.pheremoneValueAt(HOME_PHEREMONE, cell.x, cell.y)
+      );
+    });
+
+    return Math.max(0, maxPheremone - currentPheremone - 2);
+  }
+
+  // calculate how much food pheremone to add to a cell
+  calculateFoodPheremoneIncrement(ant: Ant, world: World) {
+    const foodPheremone = world.pheremones.types.get(FOOD_PHEREMONE)!;
+    const antX = ant.mesh.position.x;
+    const antY = ant.mesh.position.z;
+    const currentPheremone = world.pheremones.pheremoneValueAt(
+      FOOD_PHEREMONE,
+      antX,
+      antY
+    );
+
+    // check if the ant is at some good
+    if (world.foodInCell(antX, antY).length > 0) {
+      // if so the ant will max the home pheremone in this cell
+      return foodPheremone.max - currentPheremone;
+    }
+
+    let maxPheremone = 0;
+    // otherwise look how much pheremone is in surrounding cells
+    world.getAdjacentCells(antX, antY).forEach((cell) => {
+      maxPheremone = Math.max(
+        maxPheremone,
+        world.pheremones.pheremoneValueAt(FOOD_PHEREMONE, cell.x, cell.y)
+      );
+    });
+
+    return Math.max(0, maxPheremone - currentPheremone - 2);
   }
 
   nextAction(ant: Ant, world: World): void {
