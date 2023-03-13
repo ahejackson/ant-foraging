@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { MapControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import PickHelper from './util/pick-helper';
 import AntSim from './sim/ant-sim';
 import { loadDefaultMap, saveMap } from './util/map-utils';
-import World from './world/world';
+import PickHelper from './util/pick-helper';
+import './style.css';
 
 /*
  * The main file
