@@ -1,8 +1,9 @@
 {
-  "name": "ants-vite",
+  "name": "ant-foraging",
   "author": "Adam Jackson",
   "license": "MIT",
   "version": "1.0.0",
+  "description": "A simulation model of ant foraging behaviour",
   "type": "module",
   "scripts": {
     "dev": "vite",
