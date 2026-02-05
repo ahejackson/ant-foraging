@@ -93,9 +93,16 @@ export default class World {
 
 	update(delta: number) {
 		this.pheromones.update(delta);
-		this.colonies.forEach((c) => c.update(delta));
-		this.ants.forEach((a) => a.update(delta));
-		this.food.forEach((f) => f.update(delta));
+
+		for (const colony of this.colonies) {
+			colony.update(delta);
+		}
+		for (const ant of this.ants) {
+			ant.update(delta);
+		}
+		for (const food of this.food) {
+			food.update(delta);
+		}
 
 		// TODO - clean up any removed entities
 		// remove dead ants
@@ -189,7 +196,7 @@ export default class World {
 			}
 		}
 
-		if (res.length == 0) {
+		if (res.length === 0) {
 			console.log(`nowhere to go from (${cX},${cY})`);
 		}
 		return res;
@@ -239,7 +246,7 @@ export default class World {
 			}
 		}
 
-		if (res.length == 0) {
+		if (res.length === 0) {
 			console.log(`nothing is around (${cX},${cY})`);
 		}
 		return res;
@@ -303,7 +310,7 @@ export default class World {
 			}
 		}
 
-		if (res.length == 0) {
+		if (res.length === 0) {
 			console.log(`nowhere to go from (${cX},${cY})`);
 		}
 		return res;

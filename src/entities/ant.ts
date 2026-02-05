@@ -82,7 +82,7 @@ export default class Ant {
 		);
 	}
 
-	pickupFood(f: Food) {
+	pickupFood(_f: Food) {
 		this.hasFood = true;
 		(this.mesh as Mesh).material = FOOD_MATERIAL;
 	}

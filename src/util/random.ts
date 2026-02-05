@@ -1,7 +1,7 @@
 import seedrandom from "seedrandom";
 
 export default class Random {
-	rng: seedrandom.prng;
+	rng: seedrandom.PRNG;
 
 	constructor(readonly seed: string) {
 		this.rng = seedrandom(seed);

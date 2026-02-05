@@ -9,5 +9,5 @@ export default class Food {
 		this.mesh.position.set(x, 0.5, y);
 	}
 
-	update(delta: number) {}
+	update(_delta: number) {}
 }

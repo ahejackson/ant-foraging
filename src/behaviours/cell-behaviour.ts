@@ -21,7 +21,7 @@ In particular, groups of ants, some with food and some without, can get stuck in
 
 The initial exploratory stage is also very slow as the ants are doing random walks.`;
 
-	goalReached(ant: Ant, world: World) {
+	goalReached(ant: Ant, world: World): void {
 		switch (ant.state) {
 			case AntState.IN_COLONY:
 				// Log to console - this state shouldn't happen
@@ -36,7 +36,7 @@ The initial exploratory stage is also very slow as the ants are doing random wal
 		}
 	}
 
-	foragingGoalReached(ant: Ant, world: World) {
+	foragingGoalReached(ant: Ant, world: World): void {
 		// 1. Check if the current cell contains food
 		const foodInCell = world.foodInCell(
 			ant.mesh.position.x,
@@ -57,7 +57,7 @@ The initial exploratory stage is also very slow as the ants are doing random wal
 		}
 	}
 
-	returningGoalReached(ant: Ant, world: World) {
+	returningGoalReached(ant: Ant, world: World): void {
 		// Check if the ant has returned to its home colony
 		if (ant.isHome()) {
 			// if so, return any food it is carrying and change the state
@@ -92,7 +92,7 @@ The initial exploratory stage is also very slow as the ants are doing random wal
 		}
 	}
 
-	nextForagingAction(ant: Ant, world: World) {
+	nextForagingAction(ant: Ant, world: World): Vector3 | null {
 		// 1. find the adjacent cells
 		const options = world.getPassableAdjacentCells(
 			ant.mesh.position.x,
@@ -161,10 +161,10 @@ The initial exploratory stage is also very slow as the ants are doing random wal
 		);
 
 		// 2. check that there are some (there should be...)
-		if (options.length == 0) {
+		if (options.length === 0) {
 			// this should not happen
 			console.log(
-				"Ant stuck at (${ant.mesh.position.x}, ${ant.mesh.position.z})",
+				`Ant stuck at (${ant.mesh.position.x}, ${ant.mesh.position.z})`,
 			);
 			return null;
 		}

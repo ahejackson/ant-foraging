@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { MapControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { MapControls } from "three/addons/controls/MapControls.js";
 import AntSim from "./sim/ant-sim";
 import { loadDefaultMap, saveMap } from "./util/map-utils";
 import PickHelper from "./util/pick-helper";

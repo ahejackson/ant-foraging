@@ -161,7 +161,7 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
 		}
 	}
 
-	nextForagingAction(ant: Ant, world: World) {
+	nextForagingAction(ant: Ant, world: World): Vector3 | null {
 		const antX = ant.mesh.position.x;
 		const antY = ant.mesh.position.z;
 
@@ -169,9 +169,9 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
 		const options = world.getPassableAdjacentDirections(antX, antY);
 
 		// 2. check that there are some (there should be...)
-		if (options.length == 0) {
+		if (options.length === 0) {
 			// this should not happen
-			console.log("Ant stuck at (${antX}, ${antY})");
+			console.log(`Ant stuck at (${antX}, ${antY})`);
 			return null;
 		}
 
@@ -205,7 +205,7 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
 
 		// if the length is 0 it must mean none of the options are in the forward direction,
 		// so all the options are non-forward directions
-		if (directionOptions.length == 0) {
+		if (directionOptions.length === 0) {
 			directionOptions = options;
 		}
 
@@ -229,12 +229,10 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
 		});
 
 		// 7. randomly pick among the best possible locations
-		if (bestDirections.length > 0) {
-			return this.moveDirection(ant, AntSim.RNG.pick(bestDirections));
-		}
+		return this.moveDirection(ant, AntSim.RNG.pick(bestDirections));
 	}
 
-	nextReturningAction(ant: Ant, world: World) {
+	nextReturningAction(ant: Ant, world: World): Vector3 | null {
 		const antX = ant.mesh.position.x;
 		const antY = ant.mesh.position.z;
 
@@ -242,9 +240,9 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
 		const options = world.getPassableAdjacentDirections(antX, antY);
 
 		// 2. check that there are some (there should be...)
-		if (options.length == 0) {
+		if (options.length === 0) {
 			// this should not happen
-			console.log("Ant stuck at (${antX}, ${antY})");
+			console.log(`Ant stuck at (${antX}, ${antY})`);
 			return null;
 		}
 
@@ -278,7 +276,7 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
 
 		// if the length is 0 it must mean none of the options are in the forward direction,
 		// so all the options are non-forward directions
-		if (directionOptions.length == 0) {
+		if (directionOptions.length === 0) {
 			directionOptions = options;
 		}
 
@@ -302,8 +300,6 @@ It is possible for the ants to forage efficiently with this behaviour, but it re
 		});
 
 		// 7. randomly pick among the best possible locations
-		if (bestDirections.length > 0) {
-			return this.moveDirection(ant, AntSim.RNG.pick(bestDirections));
-		}
+		return this.moveDirection(ant, AntSim.RNG.pick(bestDirections));
 	}
 }

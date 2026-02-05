@@ -1,9 +1,9 @@
 import { saveAs } from "file-saver";
-import Colony from "../entities/colony";
-import Food from "../entities/food";
-import { AntMap } from "../world/ant-map";
-import World from "../world/world";
+import type Colony from "../entities/colony";
+import type Food from "../entities/food";
+import type { AntMap } from "../world/ant-map";
 import DEFAULT_MAP from "../world/default-map.json";
+import type World from "../world/world";
 
 export function saveMap(world: World) {
 	console.log("Saving...");
@@ -42,7 +42,7 @@ export function saveTerrainCompressed(
 	const boolBundles = boolArray
 		.reduce<("0" | "1")[][]>(
 			([c, ...r], b, i) =>
-				(boolArray.length - i) % 8 == 0 ? [[b], c, ...r] : [[...c, b], ...r],
+				(boolArray.length - i) % 8 === 0 ? [[b], c, ...r] : [[...c, b], ...r],
 			[[]],
 		)
 		.reverse();
@@ -103,11 +103,15 @@ export function loadMap(map: AntMap, world: World) {
 	world.createTerrain(0, 0, map.width, map.height);
 
 	if (map.colonies) {
-		map.colonies.forEach((colony) => world.createColony(colony.x, colony.y));
+		for (const colony of map.colonies) {
+			world.createColony(colony.x, colony.y);
+		}
 	}
 
 	if (map.food) {
-		map.food.forEach((food) => world.createFood(food.x, food.y));
+		for (const food of map.food) {
+			world.createFood(food.x, food.y);
+		}
 	}
 
 	// load the obstacles either from compressed or uncompressed form
@@ -115,7 +119,7 @@ export function loadMap(map: AntMap, world: World) {
 		const cells = loadTerrainCompressed(map.terrainCompressed);
 		for (let y = 0; y < map.height; y++) {
 			for (let x = 0; x < map.width; x++) {
-				if (!cells[y * map.height + x]) {
+				if (!cells[y * map.width + x]) {
 					world.createObstacle(x, y);
 				}
 			}

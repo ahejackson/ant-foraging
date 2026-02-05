@@ -5,7 +5,6 @@ import {
 	MeshBasicMaterial,
 	type Object3D,
 	Raycaster,
-	Scene,
 	Vector2,
 } from "three";
 
@@ -43,7 +42,11 @@ export default class PickHelper {
 		document.addEventListener("touchend", this.clearPickPosition);
 	}
 
-	pick(normalizedPosition: Vector2, root: Object3D, camera: Camera) {
+	pick(
+		normalizedPosition: Vector2,
+		root: Object3D,
+		camera: Camera,
+	): Vector2 | null {
 		// restore the color if there is a picked object
 		if (this.pickedObject) {
 			this.pickedObject.material = this.pickedObjectSavedMaterial;
@@ -70,6 +73,8 @@ export default class PickHelper {
 				this.pickedObject.position.z,
 			);
 		}
+
+		return null;
 	}
 
 	getCanvasRelativePosition(event: MouseEvent | Touch) {

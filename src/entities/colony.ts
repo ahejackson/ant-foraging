@@ -9,5 +9,5 @@ export default class Colony {
 		this.mesh.position.set(x, 0, y);
 	}
 
-	update(delta: number) {}
+	update(_delta: number) {}
 }

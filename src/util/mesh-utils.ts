@@ -1,20 +1,19 @@
 import {
-	BoxBufferGeometry,
 	BoxGeometry,
 	DoubleSide,
 	GridHelper,
 	Group,
 	Mesh,
 	MeshBasicMaterial,
-	PlaneBufferGeometry,
-	SphereBufferGeometry,
+	PlaneGeometry,
+	SphereGeometry,
 } from "three";
 
 /* This file is responsible for all mesh creation */
 
 // ANT
 export const ANT_HEIGHT = 0.25;
-export const ANT_GEOMETRY = new BoxBufferGeometry(0.7, 0.5, 1);
+export const ANT_GEOMETRY = new BoxGeometry(0.7, 0.5, 1);
 export const ANT_MATERIAL = new MeshBasicMaterial({
 	color: 0x0000dd,
 });
@@ -24,7 +23,7 @@ export function createAntMesh() {
 }
 
 // COLONY
-export const COLONY_GEOMETRY = new SphereBufferGeometry(
+export const COLONY_GEOMETRY = new SphereGeometry(
 	2,
 	8,
 	8,
@@ -59,7 +58,7 @@ export const TERRAIN_MATERIAL = new MeshBasicMaterial({
 });
 
 export function createTerrainMesh(width: number, height: number) {
-	const terrainGeo = new PlaneBufferGeometry(width, height);
+	const terrainGeo = new PlaneGeometry(width, height);
 	const terrain = new Mesh(terrainGeo, TERRAIN_MATERIAL);
 
 	// rotate the mesh and reposition to make world space match mesh space
@@ -88,7 +87,7 @@ export function createObstacleMesh() {
 
 // PHEREMONES
 export const PHEREMONE_CELL_HEIGHT = 0.01;
-export const PHEREMONE_CELL_GEOMETRY = new PlaneBufferGeometry(1, 1);
+export const PHEREMONE_CELL_GEOMETRY = new PlaneGeometry(1, 1);
 
 export function createPheromoneGridMesh(
 	width: number,

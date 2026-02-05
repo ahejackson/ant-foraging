@@ -22,7 +22,7 @@ This change improves the exploratory stage because the ants are less likely to d
 
 It also removes the problem of the ants getting stuck in very tight back-and-forths and does allow for trail formation back to the colony, but these are unstable - the ants can form self contained loops where ants with food and ants without are following the tails each other is laying down, like the snake eating its own tail. In variations of the model without ant death, these loops can last indefinitely.`;
 
-	goalReached(ant: Ant, world: World) {
+	goalReached(ant: Ant, world: World): void {
 		switch (ant.state) {
 			case AntState.IN_COLONY:
 				// Log to console - this state shouldn't happen
@@ -37,7 +37,7 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
 		}
 	}
 
-	moveDirection(ant: Ant, d: Direction) {
+	moveDirection(ant: Ant, d: Direction): Vector3 {
 		ant.goal = new Vector3(
 			ant.mesh.position.x + directionVectors[d].x,
 			ANT_HEIGHT,
@@ -47,7 +47,7 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
 		return ant.goal;
 	}
 
-	foragingGoalReached(ant: Ant, world: World) {
+	foragingGoalReached(ant: Ant, world: World): void {
 		// 1. Check if the current cell contains food
 		const foodInCell = world.foodInCell(
 			ant.mesh.position.x,
@@ -69,7 +69,7 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
 		}
 	}
 
-	returningGoalReached(ant: Ant, world: World) {
+	returningGoalReached(ant: Ant, world: World): void {
 		// Check if the ant has returned to its home colony
 		if (ant.isHome()) {
 			// if so, return any food it is carrying and change the state
@@ -105,7 +105,7 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
 		}
 	}
 
-	nextForagingAction(ant: Ant, world: World) {
+	nextForagingAction(ant: Ant, world: World): Vector3 | null {
 		const antX = ant.mesh.position.x;
 		const antY = ant.mesh.position.z;
 
@@ -113,9 +113,9 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
 		const options = world.getPassableAdjacentDirections(antX, antY);
 
 		// 2. check that there are some (there should be...)
-		if (options.length == 0) {
+		if (options.length === 0) {
 			// this should not happen
-			console.log("Ant stuck at (${antX}, ${antY})");
+			console.log(`Ant stuck at (${antX}, ${antY})`);
 			return null;
 		}
 
@@ -149,7 +149,7 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
 
 		// if the length is 0 it must mean none of the options are in the forward direction,
 		// so all the options are non-forward directions
-		if (directionOptions.length == 0) {
+		if (directionOptions.length === 0) {
 			directionOptions = options;
 		}
 
@@ -173,12 +173,10 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
 		});
 
 		// 7. randomly pick among the best possible locations
-		if (bestDirections.length > 0) {
-			return this.moveDirection(ant, AntSim.RNG.pick(bestDirections));
-		}
+		return this.moveDirection(ant, AntSim.RNG.pick(bestDirections));
 	}
 
-	nextReturningAction(ant: Ant, world: World) {
+	nextReturningAction(ant: Ant, world: World): Vector3 | null {
 		const antX = ant.mesh.position.x;
 		const antY = ant.mesh.position.z;
 
@@ -186,9 +184,9 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
 		const options = world.getPassableAdjacentDirections(antX, antY);
 
 		// 2. check that there are some (there should be...)
-		if (options.length == 0) {
+		if (options.length === 0) {
 			// this should not happen
-			console.log("Ant stuck at (${antX}, ${antY})");
+			console.log(`Ant stuck at (${antX}, ${antY})`);
 			return null;
 		}
 
@@ -222,7 +220,7 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
 
 		// if the length is 0 it must mean none of the options are in the forward direction,
 		// so all the options are non-forward directions
-		if (directionOptions.length == 0) {
+		if (directionOptions.length === 0) {
 			directionOptions = options;
 		}
 
@@ -246,8 +244,6 @@ It also removes the problem of the ants getting stuck in very tight back-and-for
 		});
 
 		// 7. randomly pick among the best possible locations
-		if (bestDirections.length > 0) {
-			return this.moveDirection(ant, AntSim.RNG.pick(bestDirections));
-		}
+		return this.moveDirection(ant, AntSim.RNG.pick(bestDirections));
 	}
 }

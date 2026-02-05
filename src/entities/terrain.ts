@@ -11,5 +11,5 @@ export default class Terrain {
 		this.mesh = createTerrainMesh(width, height);
 	}
 
-	update(delta: number) {}
+	update(_delta: number) {}
 }
