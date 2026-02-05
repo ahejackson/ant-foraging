@@ -1,12 +1,15 @@
-import { Group } from 'three';
-import { createTerrainMesh } from '../util/mesh-utils';
+import type { Group } from "three";
+import { createTerrainMesh } from "../util/mesh-utils";
 
 export default class Terrain {
-  mesh: Group;
+	mesh: Group;
 
-  constructor(readonly width: number, readonly height: number) {
-    this.mesh = createTerrainMesh(width, height);
-  }
+	constructor(
+		readonly width: number,
+		readonly height: number,
+	) {
+		this.mesh = createTerrainMesh(width, height);
+	}
 
-  update(delta: number) {}
+	update(delta: number) {}
 }

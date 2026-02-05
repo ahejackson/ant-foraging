@@ -1,13 +1,13 @@
-import { Mesh } from 'three';
-import { createColonyMesh } from '../util/mesh-utils';
+import type { Mesh } from "three";
+import { createColonyMesh } from "../util/mesh-utils";
 
 export default class Colony {
-  mesh: Mesh;
+	mesh: Mesh;
 
-  constructor(x: number, y: number) {
-    this.mesh = createColonyMesh();
-    this.mesh.position.set(x, 0, y);
-  }
+	constructor(x: number, y: number) {
+		this.mesh = createColonyMesh();
+		this.mesh.position.set(x, 0, y);
+	}
 
-  update(delta: number) {}
+	update(delta: number) {}
 }
